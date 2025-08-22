@@ -1,0 +1,51 @@
+﻿<Window x:Class="MarketClock.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MarketClock"    
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        mc:Ignorable="d"
+        Background="Black" Opacity="0.85"        
+        Foreground="White"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Title="Clock" Height="450" Width="800" ShowInTaskbar="False" Topmost="True" WindowStyle="None" AllowsTransparency="True">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closed">
+            <i:InvokeCommandAction Command="{Binding ExitCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Window.DataContext>
+        <local:MainWindowViewModel />
+    </Window.DataContext>
+    <Grid>
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem x:Name="ExitMenu" Header="Exit" Command="{Binding ExitCommand}" Click="ExitMenu_Click" />
+            </ContextMenu>
+        </Grid.ContextMenu>
+        
+        <!-- Edge resize grips -->
+        <Rectangle x:Name="ResizeGripRight" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="8" Fill="Transparent" Cursor="SizeWE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripBottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="8" Fill="Transparent" Cursor="SizeNS" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripLeft" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="8" Fill="Transparent" Cursor="SizeWE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripTop" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="8" Fill="Transparent" Cursor="SizeNS" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+
+        <!-- Corner resize grips -->
+        <Rectangle x:Name="ResizeGripTopLeft" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Height="16" Fill="Transparent" Cursor="SizeNWSE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripTopRight" HorizontalAlignment="Right" VerticalAlignment="Top" Width="16" Height="16" Fill="Transparent" Cursor="SizeNESW" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripBottomLeft" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="16" Height="16" Fill="Transparent" Cursor="SizeNESW" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripBottomRight" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="16" Height="16" Fill="Transparent" Cursor="SizeNWSE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+
+        <Viewbox>
+            <TextBlock Text="{Binding CurrentTime}"
+                    Padding="5"
+                    Foreground="White"
+                    FontFamily="Courier New"
+                    FontSize="8"
+                    TextAlignment="Center"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"/>
+        </Viewbox>
+    </Grid>
+</Window>

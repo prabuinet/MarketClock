@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="fonts\digital-7 %28italic%29.ttf" />
+    <None Remove="fonts\digital-7 %28mono italic%29.ttf" />
+    <None Remove="fonts\digital-7 %28mono%29.ttf" />
+    <None Remove="fonts\digital-7.ttf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="fonts\digital-7 (italic).ttf" />
+    <Resource Include="fonts\digital-7 (mono italic).ttf" />
+    <Resource Include="fonts\digital-7 (mono).ttf" />
+    <Resource Include="fonts\digital-7.ttf" />
+  </ItemGroup>
+
+</Project>
