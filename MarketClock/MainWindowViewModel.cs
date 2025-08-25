@@ -12,7 +12,7 @@ namespace MarketClock
 
         void UpdateDateTime()
         {
-            CurrentTime = System.DateTime.Now.ToString("dd-MM-yyyy ddd\nhh:mm:ss tt");
+            CurrentTime = DateTime.Now.ToString("dd-MM-yyyy ddd\nhh:mm:ss tt").ToUpper();
         }
 
         public MainWindowViewModel()

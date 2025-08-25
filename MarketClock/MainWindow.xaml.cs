@@ -13,6 +13,9 @@ namespace MarketClock
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Point? _lastMousePosition = null;
+        private const double MouseMoveThreshold = 10.0; // pixels
+
         private readonly string stateFilePath = ".";
 
         private const int HTLEFT = 10;
@@ -43,6 +46,8 @@ namespace MarketClock
             int cy,
             uint uFlags);
 
+        public bool ScreenSaverMode { get; set; } = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -57,7 +62,7 @@ namespace MarketClock
             }
 
             // Restore window position and size
-            if (File.Exists(stateFilePath))
+            if (this.WindowState == WindowState.Normal && File.Exists(stateFilePath))
             {
                 var lines = File.ReadAllLines(stateFilePath);
                 if (lines.Length == 4 &&
@@ -78,6 +83,12 @@ namespace MarketClock
 
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
         {
+            if(this.WindowState == WindowState.Maximized)
+            {
+                // Do not save state if minimized
+                return;
+            }
+
             // Save window position and size
             var lines = new[]
             {
@@ -120,6 +131,11 @@ namespace MarketClock
     
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            if(ScreenSaverMode)
+            {
+                Environment.Exit(0);
+            }
+
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 this.DragMove();
@@ -129,6 +145,59 @@ namespace MarketClock
         private void ExitMenu_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void MaximizeMenu_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Maximized;
+        }
+
+        private void RestoreMenu_Click(object sender, RoutedEventArgs e)
+        {
+            this.WindowState = WindowState.Normal;
+        }
+
+        private void Window_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if(this.WindowState == WindowState.Normal)
+            {
+                this.WindowState = WindowState.Maximized;
+            }
+            else if(this.WindowState == WindowState.Maximized)
+            {
+                this.WindowState = WindowState.Normal;
+            }
+        }
+
+        private void Window_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (ScreenSaverMode)
+            {
+                Environment.Exit(0);
+            }
+        }
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!ScreenSaverMode)
+                return;
+
+            var currentPosition = e.GetPosition(this);
+
+            if (_lastMousePosition == null)
+            {
+                _lastMousePosition = currentPosition;
+                return;
+            }
+
+            double dx = currentPosition.X - _lastMousePosition.Value.X;
+            double dy = currentPosition.Y - _lastMousePosition.Value.Y;
+            double distance = Math.Sqrt(dx * dx + dy * dy);
+
+            if (distance >= MouseMoveThreshold)
+            {
+                Environment.Exit(0);
+            }
         }
     }
 }

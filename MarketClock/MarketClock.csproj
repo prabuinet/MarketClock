@@ -13,6 +13,38 @@
     <None Remove="fonts\digital-7 %28mono italic%29.ttf" />
     <None Remove="fonts\digital-7 %28mono%29.ttf" />
     <None Remove="fonts\digital-7.ttf" />
+    <None Remove="fonts\JetBrainsMono-Bold.ttf" />
+    <None Remove="fonts\JetBrainsMono-BoldItalic.ttf" />
+    <None Remove="fonts\JetBrainsMono-ExtraBold.ttf" />
+    <None Remove="fonts\JetBrainsMono-ExtraBoldItalic.ttf" />
+    <None Remove="fonts\JetBrainsMono-ExtraLight.ttf" />
+    <None Remove="fonts\JetBrainsMono-ExtraLightItalic.ttf" />
+    <None Remove="fonts\JetBrainsMono-Italic.ttf" />
+    <None Remove="fonts\JetBrainsMono-Light.ttf" />
+    <None Remove="fonts\JetBrainsMono-LightItalic.ttf" />
+    <None Remove="fonts\JetBrainsMono-Medium.ttf" />
+    <None Remove="fonts\JetBrainsMono-MediumItalic.ttf" />
+    <None Remove="fonts\JetBrainsMono-Regular.ttf" />
+    <None Remove="fonts\JetBrainsMono-SemiBold.ttf" />
+    <None Remove="fonts\JetBrainsMono-SemiBoldItalic.ttf" />
+    <None Remove="fonts\JetBrainsMono-Thin.ttf" />
+    <None Remove="fonts\JetBrainsMono-ThinItalic.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-Bold.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-BoldItalic.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-ExtraBold.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-ExtraBoldItalic.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-ExtraLight.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-ExtraLightItalic.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-Italic.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-Light.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-LightItalic.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-Medium.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-MediumItalic.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-Regular.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-SemiBold.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-SemiBoldItalic.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-Thin.ttf" />
+    <None Remove="fonts\JetBrainsMonoNL-ThinItalic.ttf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +57,38 @@
     <Resource Include="fonts\digital-7 (mono italic).ttf" />
     <Resource Include="fonts\digital-7 (mono).ttf" />
     <Resource Include="fonts\digital-7.ttf" />
+    <Resource Include="fonts\JetBrainsMono-Bold.ttf" />
+    <Resource Include="fonts\JetBrainsMono-BoldItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMono-ExtraBold.ttf" />
+    <Resource Include="fonts\JetBrainsMono-ExtraBoldItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMono-ExtraLight.ttf" />
+    <Resource Include="fonts\JetBrainsMono-ExtraLightItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMono-Italic.ttf" />
+    <Resource Include="fonts\JetBrainsMono-Light.ttf" />
+    <Resource Include="fonts\JetBrainsMono-LightItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMono-Medium.ttf" />
+    <Resource Include="fonts\JetBrainsMono-MediumItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMono-Regular.ttf" />
+    <Resource Include="fonts\JetBrainsMono-SemiBold.ttf" />
+    <Resource Include="fonts\JetBrainsMono-SemiBoldItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMono-Thin.ttf" />
+    <Resource Include="fonts\JetBrainsMono-ThinItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-Bold.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-BoldItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-ExtraBold.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-ExtraBoldItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-ExtraLight.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-ExtraLightItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-Italic.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-Light.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-LightItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-Medium.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-MediumItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-Regular.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-SemiBold.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-SemiBoldItalic.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-Thin.ttf" />
+    <Resource Include="fonts\JetBrainsMonoNL-ThinItalic.ttf" />
   </ItemGroup>
 
 </Project>

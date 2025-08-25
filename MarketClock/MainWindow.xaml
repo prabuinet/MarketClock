@@ -9,6 +9,9 @@
         Background="Black" Opacity="0.85"        
         Foreground="White"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        MouseDoubleClick="Window_MouseDoubleClick"
+        KeyUp="Window_KeyUp"
+        MouseMove="Window_MouseMove"
         Title="Clock" Height="450" Width="800" ShowInTaskbar="False" Topmost="True" WindowStyle="None" AllowsTransparency="True">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
@@ -18,31 +21,40 @@
     <Window.DataContext>
         <local:MainWindowViewModel />
     </Window.DataContext>
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="MaximizeMenu" Header="Maximize" Click="MaximizeMenu_Click" />
+            <MenuItem x:Name="RestoreMenu" Header="Restore" Click="RestoreMenu_Click" />
+            <Separator />
+            <MenuItem x:Name="ExitMenu" Header="Exit" Command="{Binding ExitCommand}" Click="ExitMenu_Click" />
+        </ContextMenu>
+    </Window.ContextMenu>
+    <Window.Resources>
+        <FontFamily x:Key="Digital7Font">pack://application:,,,/fonts/#digital-7 (mono)</FontFamily>
+        <FontFamily x:Key="JetBrainsMonoNLThin">pack://application:,,,/fonts/#JetBrainsMonoNL-Thin</FontFamily>
+        <FontFamily x:Key="JetBrainsMonoThin">pack://application:,,,/fonts/#JetBrains Mono Thin</FontFamily>
+        <FontFamily x:Key="JetBrainsMonoRegular">pack://application:,,,/fonts/#JetBrains Mono Regular</FontFamily>
+    </Window.Resources>
+
     <Grid>
-        <Grid.ContextMenu>
-            <ContextMenu>
-                <MenuItem x:Name="ExitMenu" Header="Exit" Command="{Binding ExitCommand}" Click="ExitMenu_Click" />
-            </ContextMenu>
-        </Grid.ContextMenu>
-        
         <!-- Edge resize grips -->
-        <Rectangle x:Name="ResizeGripRight" HorizontalAlignment="Right" VerticalAlignment="Stretch" Width="8" Fill="Transparent" Cursor="SizeWE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
-        <Rectangle x:Name="ResizeGripBottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Height="8" Fill="Transparent" Cursor="SizeNS" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
-        <Rectangle x:Name="ResizeGripLeft" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="8" Fill="Transparent" Cursor="SizeWE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
-        <Rectangle x:Name="ResizeGripTop" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="8" Fill="Transparent" Cursor="SizeNS" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripRight" HorizontalAlignment="Right" VerticalAlignment="Stretch" Panel.ZIndex="10" Width="4" Fill="Transparent" Cursor="SizeWE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripBottom" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Panel.ZIndex="10" Height="4" Fill="Transparent" Cursor="SizeNS" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripLeft" HorizontalAlignment="Left" VerticalAlignment="Stretch" Panel.ZIndex="10" Width="4" Fill="Transparent" Cursor="SizeWE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripTop" HorizontalAlignment="Stretch" VerticalAlignment="Top" Panel.ZIndex="10" Height="4" Fill="Transparent" Cursor="SizeNS" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
 
         <!-- Corner resize grips -->
-        <Rectangle x:Name="ResizeGripTopLeft" HorizontalAlignment="Left" VerticalAlignment="Top" Width="16" Height="16" Fill="Transparent" Cursor="SizeNWSE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
-        <Rectangle x:Name="ResizeGripTopRight" HorizontalAlignment="Right" VerticalAlignment="Top" Width="16" Height="16" Fill="Transparent" Cursor="SizeNESW" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
-        <Rectangle x:Name="ResizeGripBottomLeft" HorizontalAlignment="Left" VerticalAlignment="Bottom" Width="16" Height="16" Fill="Transparent" Cursor="SizeNESW" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
-        <Rectangle x:Name="ResizeGripBottomRight" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="16" Height="16" Fill="Transparent" Cursor="SizeNWSE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripTopLeft" HorizontalAlignment="Left" VerticalAlignment="Top" Panel.ZIndex="10" Width="8" Height="8" Fill="Transparent" Cursor="SizeNWSE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripTopRight" HorizontalAlignment="Right" VerticalAlignment="Top" Panel.ZIndex="10" Width="8" Height="8" Fill="Transparent" Cursor="SizeNESW" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripBottomLeft" HorizontalAlignment="Left" VerticalAlignment="Bottom" Panel.ZIndex="10" Width="8" Height="8" Fill="Transparent" Cursor="SizeNESW" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
+        <Rectangle x:Name="ResizeGripBottomRight" HorizontalAlignment="Right" VerticalAlignment="Bottom" Panel.ZIndex="10" Width="8" Height="8" Fill="Transparent" Cursor="SizeNWSE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
 
         <Viewbox>
             <TextBlock Text="{Binding CurrentTime}"
                     Padding="5"
                     Foreground="White"
-                    FontFamily="Courier New"
-                    FontSize="8"
+                    FontFamily="{StaticResource JetBrainsMonoThin}"
+                    FontSize="14"
                     TextAlignment="Center"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"/>
