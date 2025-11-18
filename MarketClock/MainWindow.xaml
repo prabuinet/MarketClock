@@ -12,10 +12,11 @@
         MouseDoubleClick="Window_MouseDoubleClick"
         KeyUp="Window_KeyUp"
         MouseMove="Window_MouseMove"
+        Loaded="Window_Loaded"
         Title="Clock" Height="450" Width="800" ShowInTaskbar="False" Topmost="True" WindowStyle="None" AllowsTransparency="True">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
-            <i:InvokeCommandAction Command="{Binding ExitCommand}" />
+            <i:InvokeCommandAction Command="{Binding ExitCommand}" />            
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Window.DataContext>
@@ -25,6 +26,7 @@
         <ContextMenu>
             <MenuItem x:Name="MaximizeMenu" Header="Maximize" Click="MaximizeMenu_Click" />
             <MenuItem x:Name="RestoreMenu" Header="Restore" Click="RestoreMenu_Click" />
+            <MenuItem x:Name="TestMenu" Header="Test" Click="TestMenu_Click" />
             <Separator />
             <MenuItem x:Name="ExitMenu" Header="Exit" Command="{Binding ExitCommand}" Click="ExitMenu_Click" />
         </ContextMenu>
@@ -49,15 +51,24 @@
         <Rectangle x:Name="ResizeGripBottomLeft" HorizontalAlignment="Left" VerticalAlignment="Bottom" Panel.ZIndex="10" Width="8" Height="8" Fill="Transparent" Cursor="SizeNESW" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
         <Rectangle x:Name="ResizeGripBottomRight" HorizontalAlignment="Right" VerticalAlignment="Bottom" Panel.ZIndex="10" Width="8" Height="8" Fill="Transparent" Cursor="SizeNWSE" MouseLeftButtonDown="ResizeGrip_MouseLeftButtonDown"/>
 
-        <Viewbox>
-            <TextBlock Text="{Binding CurrentTime}"
-                    Padding="5"
-                    Foreground="White"
-                    FontFamily="{StaticResource JetBrainsMonoThin}"
-                    FontSize="14"
-                    TextAlignment="Center"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"/>
-        </Viewbox>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Viewbox Grid.Row="0">
+                <TextBlock Text="{Binding CurrentTime}"
+                        Padding="5"
+                        Foreground="White"
+                        FontFamily="{StaticResource JetBrainsMonoThin}"
+                        FontSize="14"
+                        TextAlignment="Center"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"/>
+            </Viewbox>
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="{Binding LastMouseMoved}" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

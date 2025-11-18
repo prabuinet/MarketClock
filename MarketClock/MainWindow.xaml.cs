@@ -13,7 +13,7 @@ namespace MarketClock
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Point? _lastMousePosition = null;
+        private System.Windows.Point? _lastMousePosition = null;
         private const double MouseMoveThreshold = 10.0; // pixels
 
         private readonly string stateFilePath = ".";
@@ -169,7 +169,7 @@ namespace MarketClock
             }
         }
 
-        private void Window_KeyUp(object sender, KeyEventArgs e)
+        private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (ScreenSaverMode)
             {
@@ -177,7 +177,7 @@ namespace MarketClock
             }
         }
 
-        private void Window_MouseMove(object sender, MouseEventArgs e)
+        private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (!ScreenSaverMode)
                 return;
@@ -197,6 +197,19 @@ namespace MarketClock
             if (distance >= MouseMoveThreshold)
             {
                 Environment.Exit(0);
+            }
+        }
+
+        private void TestMenu_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(this.ScreenSaverMode == false)
+            {
+                ComputerUsageMonitor.Start();
             }
         }
     }
