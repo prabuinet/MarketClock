@@ -13,12 +13,12 @@ namespace MarketClock
         private static DateTime lastMovedTime = DateTime.Now;
         private static DateTime sessionStartTime = DateTime.Now;
         private static bool reminded = false;
-        private static bool running = false;
+        private static bool _running = false;
 
         public static void Start()
         {
-            if (running) return;
-            running = true;
+            if (_running) return;
+            _running = true;
 
             GlobalMouseTracker.MouseMoved += time => lastMovedTime = time;
             GlobalMouseTracker.Start();
@@ -26,11 +26,31 @@ namespace MarketClock
             new Thread(MonitorLoop) { IsBackground = true }.Start();
         }
 
-        public static void Stop() => running = false;
+        public static void Stop() => _running = false;
+
+        public static void ResetSession()
+        {
+            sessionStartTime = DateTime.Now;
+            lastMovedTime = DateTime.Now;
+            reminded = false;
+        }
+
+        public static TimeSpan GetActiveDuration()
+        {
+            var idle = DateTime.Now - lastMovedTime;
+            if (idle > idleThreshold)
+            {
+                return TimeSpan.Zero;
+            }
+            else
+            {
+                return DateTime.Now - sessionStartTime;
+            }
+        }
 
         private static void MonitorLoop()
         {
-            while (running)
+            while (_running)
             {
                 var idle = DateTime.Now - lastMovedTime;
 

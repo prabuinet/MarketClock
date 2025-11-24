@@ -212,5 +212,24 @@ namespace MarketClock
                 ComputerUsageMonitor.Start();
             }
         }
+
+        private void ResetSessionMenu_OnClick(object sender, RoutedEventArgs e)
+        {
+            ComputerUsageMonitor.ResetSession();
+        }
+
+        private void StartTimer_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = this.DataContext as MainWindowViewModel;
+            vm?.StartTimer(Int32.Parse(sender is FrameworkElement fe ? fe.Tag.ToString() ?? "0" : "0"));
+        }
+
+        private void StopTimer_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = this.DataContext as MainWindowViewModel;
+            vm?.StopTimer();
+        }
+
+        
     }
 }

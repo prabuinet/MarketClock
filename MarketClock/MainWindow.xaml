@@ -26,7 +26,17 @@
         <ContextMenu>
             <MenuItem x:Name="MaximizeMenu" Header="Maximize" Click="MaximizeMenu_Click" />
             <MenuItem x:Name="RestoreMenu" Header="Restore" Click="RestoreMenu_Click" />
-            <MenuItem x:Name="TestMenu" Header="Test" Click="TestMenu_Click" />
+            <MenuItem x:Name="StartTimeMenu" Header="Start Timer">
+                <MenuItem Header="6 Minutes"  Click="StartTimer_Click" Tag="6" />
+                <MenuItem Header="11 Minutes" Click="StartTimer_Click" Tag="11" />
+                <MenuItem Header="16 Minutes" Click="StartTimer_Click" Tag="16" />
+                <MenuItem Header="21 Minutes" Click="StartTimer_Click" Tag="21" />
+                <MenuItem Header="30 Minutes" Click="StartTimer_Click" Tag="30" />
+                <MenuItem Header="1 Hour"     Click="StartTimer_Click" Tag="60" />
+                <MenuItem Header="Stop"       Click="StopTimer_Click" />
+            </MenuItem>
+            <Separator />
+            <MenuItem x:Name="ResetSessionMenu" Header="Reset Session" Click="ResetSessionMenu_OnClick" />
             <Separator />
             <MenuItem x:Name="ExitMenu" Header="Exit" Command="{Binding ExitCommand}" Click="ExitMenu_Click" />
         </ContextMenu>
@@ -55,6 +65,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Viewbox Grid.Row="0">
                 <TextBlock Text="{Binding CurrentTime}"
@@ -66,8 +77,21 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center"/>
             </Viewbox>
-            <StackPanel Grid.Row="1">
-                <TextBlock Text="{Binding LastMouseMoved}" />
+            <Viewbox Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding TimerVisibility}">
+                <TextBlock                         
+                    Text="{Binding TimerCountDown}"
+                    Padding="5"
+                    Foreground="Fuchsia"
+                    FontFamily="{StaticResource JetBrainsMonoThin}"
+                    FontSize="14"
+                    TextAlignment="Center"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                />                
+            </Viewbox>
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <Label Content="Active Since:" Foreground="White" />
+                <Label Content="{Binding ActiveDuration}" Foreground="White" />
             </StackPanel>
         </Grid>
     </Grid>

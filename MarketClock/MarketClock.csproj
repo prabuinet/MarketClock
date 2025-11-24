@@ -46,6 +46,7 @@
     <None Remove="fonts\JetBrainsMonoNL-SemiBoldItalic.ttf" />
     <None Remove="fonts\JetBrainsMonoNL-Thin.ttf" />
     <None Remove="fonts\JetBrainsMonoNL-ThinItalic.ttf" />
+    <None Remove="sounds\bell.mp3" />
     <None Remove="sounds\notification-158187.mp3" />
   </ItemGroup>
 
@@ -92,6 +93,7 @@
     <Resource Include="fonts\JetBrainsMonoNL-SemiBoldItalic.ttf" />
     <Resource Include="fonts\JetBrainsMonoNL-Thin.ttf" />
     <Resource Include="fonts\JetBrainsMonoNL-ThinItalic.ttf" />
+    <Resource Include="sounds\bell.mp3" />
     <Resource Include="sounds\notification-158187.mp3" />
   </ItemGroup>
 
