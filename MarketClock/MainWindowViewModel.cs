@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Timers;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace MarketClock
 {    
@@ -20,35 +20,49 @@ namespace MarketClock
         private bool isTimerRunning;
 
         [ObservableProperty]
+        private string jeeDays = "";
+
+        [ObservableProperty]
+        private string jeeHours = "";
+
+        [ObservableProperty]
         private Visibility timerVisibility = Visibility.Collapsed;
 
-        // Timer for Reminder 
-        System.Timers.Timer _timer = new();
+        // Timer for Reminder
+        private readonly DispatcherTimer _timer = new();
         private DateTime _timerStartTime;
         private TimeSpan _timerInterval;
 
         // Clock Related Fields
-        private bool _clockRunning = true;
+        private readonly DispatcherTimer _clockTimer = new()
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
 
         public MainWindowViewModel()
         {
-            _timer.AutoReset = false;
-            _timer.Elapsed += Timer_Elapsed;
+            _timer.Tick += Timer_Elapsed;
+            _clockTimer.Tick += (_, _) => UpdateClock();
 
-            new Thread(() =>
-            {
-                while (_clockRunning)
-                {
-                    UpdateDateTime();
+            UpdateClock();
+            _clockTimer.Start();
+        }
 
-                    //// Update last mouse moved time ago
-                    ActiveDuration = GetTimeDiffAgo(ComputerUsageMonitor.GetActiveDuration());
+        private void UpdateClock()
+        {
+            UpdateDateTime();
+            UpdateJEEHours();
 
-                    TimerCountDown = IsTimerRunning ? GetRemainingString() : "00:00:00";
+            //// Update last mouse moved time ago
+            ActiveDuration = GetTimeDiffAgo(ComputerUsageMonitor.GetActiveDuration());
 
-                    Thread.Sleep(1000);
-                }
-            }).Start();
+            TimerCountDown = IsTimerRunning ? GetRemainingString() : "00:00:00";
+        }
+
+        void UpdateJEEHours()
+        {
+            JeeDays = (new DateTime(2027, 1, 26) - DateTime.Today).Days.ToString();
+            JeeHours = ((new DateTime(2027, 1, 26) - DateTime.Today).Days * 3).ToString();
         }
 
         void UpdateDateTime()
@@ -79,7 +93,9 @@ namespace MarketClock
         [RelayCommand]
         void Exit()
         {
-            _clockRunning = false;
+            _clockTimer.Stop();
+            StopTimer();
+            ComputerUsageMonitor.Stop();
         }
 
         [RelayCommand]
@@ -90,15 +106,25 @@ namespace MarketClock
 
         public void StartTimer(int minutes)
         {
+            if (minutes <= 0)
+            {
+                StopTimer();
+                return;
+            }
+
+            _timer.Stop();
             _timerStartTime = DateTime.Now;
             _timerInterval = TimeSpan.FromMinutes(minutes);
-            _timer.Interval = TimeSpan.FromMinutes(minutes).TotalMilliseconds;
-            _timer.Start();
+            _timer.Interval = _timerInterval;
             IsTimerRunning = true;
+            TimerCountDown = GetRemainingString();
+            _timer.Start();
         }
 
-        private void Timer_Elapsed(object? sender, ElapsedEventArgs e)
+        private void Timer_Elapsed(object? sender, EventArgs e)
         {
+            _timer.Stop();
+
             // Play Sound
             SoundPlayerHelper.PlayResourceMp3("pack://application:,,,/sounds/bell.mp3", 1.0f);
             IsTimerRunning = false;

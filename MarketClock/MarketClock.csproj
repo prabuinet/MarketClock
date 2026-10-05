@@ -7,6 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
+	<ApplicationManifest>app.manifest</ApplicationManifest>
+	<ApplicationIcon>app.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -51,9 +53,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.135" />
-    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.161" />
+    <PackageReference Include="NAudio" Version="3.1.0" />
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MarketClock.Data\MarketClock.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -93,6 +100,7 @@
     <Resource Include="fonts\JetBrainsMonoNL-SemiBoldItalic.ttf" />
     <Resource Include="fonts\JetBrainsMonoNL-Thin.ttf" />
     <Resource Include="fonts\JetBrainsMonoNL-ThinItalic.ttf" />
+    <Resource Include="app.ico" />
     <Resource Include="sounds\bell.mp3" />
     <Resource Include="sounds\notification-158187.mp3" />
   </ItemGroup>

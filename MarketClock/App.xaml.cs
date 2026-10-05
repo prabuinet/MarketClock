@@ -12,6 +12,7 @@ namespace MarketClock
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            RegisterTextBoxSelectAllOnFocus();
 
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length > 1)
@@ -47,6 +48,38 @@ namespace MarketClock
             defaultWin.WindowStyle = WindowStyle.None;
             defaultWin.Topmost = true;
             defaultWin.Show();
+        }
+
+        /// <summary>Makes every TextBox in the app select all of its text when it gets focus.</summary>
+        private static void RegisterTextBoxSelectAllOnFocus()
+        {
+            EventManager.RegisterClassHandler(
+                typeof(System.Windows.Controls.TextBox),
+                UIElement.GotKeyboardFocusEvent,
+                new System.Windows.Input.KeyboardFocusChangedEventHandler((sender, _) =>
+                {
+                    // Multi-line boxes (the notes panel) keep the caret where it was put;
+                    // selecting everything there would make the next keystroke wipe the text.
+                    var textBox = (System.Windows.Controls.TextBox)sender;
+                    if (!textBox.AcceptsReturn)
+                    {
+                        textBox.SelectAll();
+                    }
+                }));
+
+            // A mouse click would otherwise place the caret right after focus and clear the selection.
+            EventManager.RegisterClassHandler(
+                typeof(System.Windows.Controls.TextBox),
+                UIElement.PreviewMouseLeftButtonDownEvent,
+                new System.Windows.Input.MouseButtonEventHandler((sender, args) =>
+                {
+                    var textBox = (System.Windows.Controls.TextBox)sender;
+                    if (!textBox.AcceptsReturn && !textBox.IsKeyboardFocusWithin)
+                    {
+                        textBox.Focus();
+                        args.Handled = true;
+                    }
+                }));
         }
 
     }

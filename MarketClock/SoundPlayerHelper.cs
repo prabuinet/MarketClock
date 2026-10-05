@@ -23,7 +23,7 @@ namespace MarketClock
             var mp3Reader = new Mp3FileReader(stream);
             var volumeProvider = new WaveChannel32(mp3Reader) { Volume = volume };
 
-            var output = new WaveOutEvent();
+            var output = new WaveOut();
             output.Init(volumeProvider);
             output.Play();
 

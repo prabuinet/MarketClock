@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.IO;
-using System.Reflection;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
@@ -16,7 +16,9 @@ namespace MarketClock
         private System.Windows.Point? _lastMousePosition = null;
         private const double MouseMoveThreshold = 10.0; // pixels
 
-        private readonly string stateFilePath = ".";
+        private readonly string stateFilePath;
+        private AccountsWindow? accountsWindow;
+        private SettingsWindow? settingsWindow;
 
         private const int HTLEFT = 10;
         private const int HTRIGHT = 11;
@@ -53,23 +55,20 @@ namespace MarketClock
             InitializeComponent();
             this.Topmost = true;
 
-            // Get path next to exe
-            var exePath = Assembly.GetEntryAssembly()?.Location;
-            var exeDir = Path.GetDirectoryName(exePath);
-            if (exeDir != null)
-            {
-                stateFilePath = Path.Combine(exeDir, "windowstate.txt");
-            }
+            stateFilePath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "MarketClock",
+                "windowstate.txt");
 
             // Restore window position and size
             if (this.WindowState == WindowState.Normal && File.Exists(stateFilePath))
             {
                 var lines = File.ReadAllLines(stateFilePath);
                 if (lines.Length == 4 &&
-                    double.TryParse(lines[0], out double left) &&
-                    double.TryParse(lines[1], out double top) &&
-                    double.TryParse(lines[2], out double width) &&
-                    double.TryParse(lines[3], out double height))
+                    double.TryParse(lines[0], CultureInfo.InvariantCulture, out double left) &&
+                    double.TryParse(lines[1], CultureInfo.InvariantCulture, out double top) &&
+                    double.TryParse(lines[2], CultureInfo.InvariantCulture, out double width) &&
+                    double.TryParse(lines[3], CultureInfo.InvariantCulture, out double height))
                 {
                     this.Left = left;
                     this.Top = top;
@@ -79,6 +78,16 @@ namespace MarketClock
             }
 
             this.Closing += MainWindow_Closing;
+
+            InitializeDashboard();
+            InitializeTrayIcon();
+            LoadPanelLayout();
+            LoadPlaceholderData();
+            LoadNotes();
+            LoadSongs();
+            LoadEqualizerStyle();
+            this.Closing += (_, _) => SaveNotes();
+            Loaded += (_, _) => RefreshDashboard();
         }
 
         private void MainWindow_Closing(object? sender, CancelEventArgs e)
@@ -90,12 +99,14 @@ namespace MarketClock
             }
 
             // Save window position and size
+            Directory.CreateDirectory(Path.GetDirectoryName(stateFilePath)!);
+
             var lines = new[]
             {
-                this.Left.ToString(),
-                this.Top.ToString(),
-                this.Width.ToString(),
-                this.Height.ToString()
+                this.Left.ToString(CultureInfo.InvariantCulture),
+                this.Top.ToString(CultureInfo.InvariantCulture),
+                this.Width.ToString(CultureInfo.InvariantCulture),
+                this.Height.ToString(CultureInfo.InvariantCulture)
             };
             File.WriteAllLines(stateFilePath, lines);
         }
@@ -159,6 +170,18 @@ namespace MarketClock
 
         private void Window_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            // Double-clicking in a text box selects a word; it should not resize the window.
+            if (IsInsideTextBox(e.OriginalSource as DependencyObject))
+            {
+                return;
+            }
+
+            // Quick repeated clicks on the song list or the equalizer are clicks, not a resize request.
+            if (SongsPanel.IsMouseOver || EqualizerPanel.IsMouseOver)
+            {
+                return;
+            }
+
             if(this.WindowState == WindowState.Normal)
             {
                 this.WindowState = WindowState.Maximized;
@@ -228,6 +251,60 @@ namespace MarketClock
         {
             var vm = this.DataContext as MainWindowViewModel;
             vm?.StopTimer();
+        }
+
+        private void AccountsMenu_Click(object sender, RoutedEventArgs e)
+        {
+            if (accountsWindow == null)
+            {
+                accountsWindow = new AccountsWindow
+                {
+                    Owner = this
+                };
+                accountsWindow.Closed += (_, _) => accountsWindow = null;
+                accountsWindow.Closed += (_, _) => RefreshDashboard();
+                accountsWindow.Show();
+                return;
+            }
+
+            if (accountsWindow.WindowState == WindowState.Minimized)
+            {
+                accountsWindow.WindowState = WindowState.Normal;
+            }
+
+            accountsWindow.Activate();
+        }
+
+        private void SettingsMenu_Click(object sender, RoutedEventArgs e)
+        {
+            if (settingsWindow == null)
+            {
+                settingsWindow = new SettingsWindow
+                {
+                    Owner = this
+                };
+                settingsWindow.Closed += (_, _) => settingsWindow = null;
+                settingsWindow.Closed += (_, _) => RefreshDashboard();
+                settingsWindow.Show();
+                return;
+            }
+
+            if (settingsWindow.WindowState == WindowState.Minimized)
+            {
+                settingsWindow.WindowState = WindowState.Normal;
+            }
+
+            settingsWindow.Activate();
+        }
+
+        private void AddExpense_Click(object sender, RoutedEventArgs e)
+        {
+            var expenseWindow = new ExpenseWindow
+            {
+                Owner = this
+            };
+            expenseWindow.ShowDialog();
+            RefreshDashboard();
         }
 
         

@@ -1,0 +1,79 @@
+<Window x:Class="MarketClock.ExpenseWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add Expense"
+        Width="380"
+        SizeToContent="Height"
+        Background="#101010"
+        Foreground="White"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <Window.Resources>
+        <FontFamily x:Key="JetBrainsMonoRegular">pack://application:,,,/fonts/#JetBrains Mono Regular</FontFamily>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="Foreground" Value="#B8FFFFFF"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,10,0,4"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
+            <Setter Property="Background" Value="#181818"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#44FFFFFF"/>
+            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
+            <Setter Property="Background" Value="#18FFFFFF"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#44FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <StackPanel Margin="18">
+        <TextBlock Text="Add Expense" FontSize="20"/>
+
+        <TextBlock Text="Account" Style="{StaticResource FieldLabel}"/>
+        <ComboBox x:Name="AccountComboBox"
+                  DisplayMemberPath="Name"
+                  FontFamily="{StaticResource JetBrainsMonoRegular}"
+                  Padding="8,6"/>
+
+        <TextBlock Text="Category" Style="{StaticResource FieldLabel}"/>
+        <ComboBox x:Name="CategoryComboBox"
+                  DisplayMemberPath="Name"
+                  FontFamily="{StaticResource JetBrainsMonoRegular}"
+                  Padding="8,6"/>
+
+        <TextBlock Text="Date" Style="{StaticResource FieldLabel}"/>
+        <DatePicker x:Name="ExpenseDatePicker"
+                    FontFamily="{StaticResource JetBrainsMonoRegular}"/>
+
+        <TextBlock Text="Description (optional)" Style="{StaticResource FieldLabel}"/>
+        <TextBox x:Name="DescriptionTextBox"/>
+
+        <TextBlock Text="Amount" Style="{StaticResource FieldLabel}"/>
+        <TextBox x:Name="AmountTextBox"/>
+
+        <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+            <Button x:Name="SaveButton" Content="+ Add Expense" Click="Save_Click" IsDefault="True" IsEnabled="False" Margin="0,0,8,0"/>
+            <Button Content="Cancel" IsCancel="True"/>
+        </StackPanel>
+
+        <TextBlock x:Name="MessageTextBlock"
+                   Text="Loading accounts..."
+                   Foreground="Fuchsia"
+                   FontSize="12"
+                   TextWrapping="Wrap"
+                   Margin="0,8,0,0"/>
+    </StackPanel>
+</Window>

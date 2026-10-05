@@ -97,7 +97,7 @@ namespace MarketClock
                 notify.ShowBalloonTip(5000);
 
                 // Dispose automatically
-                _ = new System.Threading.Tasks.Task(async () =>
+                _ = System.Threading.Tasks.Task.Run(async () =>
                 {
                     await System.Threading.Tasks.Task.Delay(20000);
                     notify.Dispose();
