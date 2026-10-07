@@ -20,6 +20,9 @@ namespace MarketClock
         /// <summary>Which equalizer look is selected (index into EqualizerShaders.Styles).</summary>
         public int EqualizerStyle { get; set; }
 
+        /// <summary>The colour theme, by its name in the Theme menu (see Theme.cs).</summary>
+        public string Theme { get; set; } = "Dragon Fruit";
+
         /// <summary>Which look the Clock panel shows: 0 digital, 1 analog.</summary>
         public int ClockStyle { get; set; }
 

@@ -34,8 +34,8 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#22FF00FF"/>
-                    <Setter Property="BorderBrush" Value="#AAFF00FF"/>
+                    <Setter Property="Background" Value="{DynamicResource AccentTintBrush}"/>
+                    <Setter Property="BorderBrush" Value="{DynamicResource AccentBorderBrush}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -50,7 +50,7 @@
         <!-- Icon-only buttons; the tooltip says what each one does. -->
         <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button Style="{StaticResource BalanceActionButton}" ToolTip="Add expense" Click="AddExpenseButton_Click">
-                <iconPacks:PackIconMaterial Kind="CashMinus" Width="20" Height="20" Foreground="Fuchsia"/>
+                <iconPacks:PackIconMaterial Kind="CashMinus" Width="20" Height="20" Foreground="{DynamicResource AccentBrush}"/>
             </Button>
             <Button Style="{StaticResource BalanceActionButton}" ToolTip="Add income" Click="AddIncomeButton_Click">
                 <iconPacks:PackIconMaterial Kind="CashPlus" Width="20" Height="20" Foreground="#39D353"/>

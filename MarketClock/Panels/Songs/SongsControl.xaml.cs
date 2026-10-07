@@ -267,8 +267,8 @@ namespace MarketClock.Panels
                 ScrollQueueToCurrent();
             }
 
-            SongsBrowseTabButton.Foreground = browse ? System.Windows.Media.Brushes.Fuchsia : System.Windows.Media.Brushes.White;
-            SongsNowPlayingTabButton.Foreground = browse ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.Fuchsia;
+            Theme.SetAccent(SongsBrowseTabButton, ForegroundProperty, browse, System.Windows.Media.Brushes.White);
+            Theme.SetAccent(SongsNowPlayingTabButton, ForegroundProperty, !browse, System.Windows.Media.Brushes.White);
         }
 
         // Clicking a line only browses: a folder (or "..") is opened, a song does nothing.
@@ -655,9 +655,7 @@ namespace MarketClock.Panels
             SongsPlayIcon.Kind = songIsPlaying ? PackIconMaterialKind.Pause : PackIconMaterialKind.Play;
             SongsPlayButton.ToolTip = songIsPlaying ? "Pause" : "Play";
             SongsShuffleButton.ToolTip = songShuffle ? "Shuffle is on" : "Shuffle is off";
-            SongsShuffleButton.Foreground = songShuffle
-                ? System.Windows.Media.Brushes.Fuchsia
-                : System.Windows.Media.Brushes.White;
+            Theme.SetAccent(SongsShuffleButton, ForegroundProperty, songShuffle, System.Windows.Media.Brushes.White);
 
             var hasCurrent = songQueueIndex >= 0 && songQueueIndex < songQueue.Count;
 

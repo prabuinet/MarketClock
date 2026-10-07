@@ -22,40 +22,12 @@
         <local:MainWindowViewModel />
     </Window.DataContext>
     <Window.ContextMenu>
-        <ContextMenu>
-            <MenuItem x:Name="StartTimeMenu" Header="Start Timer">
-                <MenuItem Header="6 Minutes"  Click="StartTimer_Click" Tag="6" />
-                <MenuItem Header="11 Minutes" Click="StartTimer_Click" Tag="11" />
-                <MenuItem Header="16 Minutes" Click="StartTimer_Click" Tag="16" />
-                <MenuItem Header="21 Minutes" Click="StartTimer_Click" Tag="21" />
-                <MenuItem Header="30 Minutes" Click="StartTimer_Click" Tag="30" />
-                <MenuItem Header="1 Hour"     Click="StartTimer_Click" Tag="60" />
-                <MenuItem Header="Stop"       Click="StopTimer_Click" />
-            </MenuItem>
-            <MenuItem x:Name="PanelsMenu" Header="Panels">
-                <MenuItem Header="Clock"         Tag="Clock"   IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Hourly Bell"   Tag="HourlyBell" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Countdown Timer" Tag="Countdown" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="JEE Countdown" Tag="Jee"     IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Actions"       Tag="Balance" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Net Worth"     Tag="NetWorth" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Net Worth Graph" Tag="NetWorthGraph" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Accounts"      Tag="Accounts" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Recent Transactions" Tag="Recent" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Top Transactions This Month" Tag="Top" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Daily Expenses" Tag="DailyExpenses" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Income &amp; Expense This Month" Tag="MonthSummary" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Songs" Tag="Songs" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Equalizer" Tag="Equalizer" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="To-Do List" Tag="Todo" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Reminders" Tag="Reminders" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Notes &amp; Calculator" Tag="Notes" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Habit Tracker" Tag="Habits" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-            </MenuItem>
+        <ContextMenu x:Name="DashboardMenu" Opened="DashboardMenu_Opened">
+            <!-- One menu per column is put above this line each time the menu opens (MainWindow.Panels.cs). -->
+            <Separator x:Name="ColumnMenusEnd" />
             <MenuItem x:Name="AccountsMenu" Header="Accounts" Click="AccountsMenu_Click" />
             <MenuItem x:Name="SettingsMenu" Header="Settings" Click="SettingsMenu_Click" />
-            <Separator />
-            <MenuItem x:Name="ResetSessionMenu" Header="Reset Session" Click="ResetSessionMenu_OnClick" />
+            <MenuItem x:Name="ThemeMenu" Header="Theme" />
             <Separator />
             <MenuItem x:Name="MinimizeMenu" Header="Minimize" Click="MinimizeMenu_Click" />
             <MenuItem x:Name="MaximizeMenu" Header="Maximize" Click="MaximizeMenu_Click" />
@@ -95,7 +67,7 @@
 
             <!-- Shows where a dragged panel will land. -->
             <Canvas x:Name="DashboardOverlay" Margin="14" IsHitTestVisible="False">
-                <Rectangle x:Name="DropIndicator" Height="3" RadiusX="1.5" RadiusY="1.5" Fill="Fuchsia" Visibility="Collapsed"/>
+                <Rectangle x:Name="DropIndicator" Height="3" RadiusX="1.5" RadiusY="1.5" Fill="{DynamicResource AccentBrush}" Visibility="Collapsed"/>
             </Canvas>
 
             <!-- Every dashboard panel is declared here and moved into the dashboard at startup.

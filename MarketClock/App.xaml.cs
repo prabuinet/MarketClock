@@ -13,6 +13,7 @@ namespace MarketClock
         {
             base.OnStartup(e);
             RegisterTextBoxSelectAllOnFocus();
+            Theme.Apply(AppSettings.Load().Theme);
 
             var window = new MainWindow();
             window.WindowStyle = WindowStyle.None;

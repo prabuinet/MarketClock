@@ -6,9 +6,8 @@ using Media = System.Windows.Media;
 
 namespace MarketClock.Panels
 {
-    // Clock panel: the time, with the countdown timer under it while one is running.
-    // The time comes in more than one look (digital, analog); clicking the clock moves on to
-    // the next, and the choice is remembered. The digital clock and the timer are bound to
+    // Clock panel: the time, in more than one look (digital, analog). Clicking the clock moves
+    // on to the next, and the choice is remembered. The digital clock is bound to
     // MainWindowViewModel, which the panel gets from the window; the analog clock is drawn here.
     public partial class ClockControl : System.Windows.Controls.UserControl
     {

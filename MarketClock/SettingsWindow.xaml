@@ -35,7 +35,7 @@
             <Setter Property="CaretBrush" Value="White"/>
             <Setter Property="Padding" Value="8,6"/>
         </Style>
-        <Style TargetType="Button">
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
             <Setter Property="Background" Value="#18FFFFFF"/>
             <Setter Property="Foreground" Value="White"/>
@@ -79,7 +79,7 @@
             <TextBlock x:Name="SettingsMessage"
                        Grid.Row="2"
                        Text="Loading..."
-                       Foreground="Fuchsia"
+                       Foreground="{DynamicResource AccentBrush}"
                        FontSize="12"
                        TextWrapping="Wrap"
                        Margin="0,6,5,0"/>
@@ -93,7 +93,7 @@
                       Margin="0,0,5,0"
                       Padding="4">
                 <TreeView.Resources>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#55FF00FF"/>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{DynamicResource AccentLineColor}"/>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="White"/>
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="#33FFFFFF"/>
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" Color="White"/>
@@ -149,7 +149,7 @@
                     <Button Content="Save" Click="SaveSongsFolder_Click"/>
                 </StackPanel>
                 <TextBlock x:Name="SongsFolderMessage"
-                           Foreground="Fuchsia"
+                           Foreground="{DynamicResource AccentBrush}"
                            FontSize="12"
                            TextWrapping="Wrap"
                            Margin="0,8,0,0"/>
@@ -178,7 +178,7 @@
                     <Button Content="Save" Click="SaveHourlyBell_Click"/>
                 </StackPanel>
                 <TextBlock x:Name="HourlyBellMessage"
-                           Foreground="Fuchsia"
+                           Foreground="{DynamicResource AccentBrush}"
                            FontSize="12"
                            TextWrapping="Wrap"
                            Margin="0,8,0,0"/>

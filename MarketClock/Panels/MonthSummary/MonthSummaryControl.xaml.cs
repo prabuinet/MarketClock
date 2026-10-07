@@ -95,8 +95,8 @@ namespace MarketClock.Panels
         {
             TextView.Visibility = chartMode ? Visibility.Collapsed : Visibility.Visible;
             ChartView.Visibility = chartMode ? Visibility.Visible : Visibility.Collapsed;
-            TextModeButton.Foreground = chartMode ? Media.Brushes.White : Media.Brushes.Fuchsia;
-            ChartModeButton.Foreground = chartMode ? Media.Brushes.Fuchsia : Media.Brushes.White;
+            Theme.SetAccent(TextModeButton, ForegroundProperty, !chartMode, Media.Brushes.White);
+            Theme.SetAccent(ChartModeButton, ForegroundProperty, chartMode, Media.Brushes.White);
         }
     }
 }

@@ -28,13 +28,6 @@ namespace MarketClock
 
         public static void Stop() => _running = false;
 
-        public static void ResetSession()
-        {
-            sessionStartTime = DateTime.Now;
-            lastMovedTime = DateTime.Now;
-            reminded = false;
-        }
-
         private static void MonitorLoop()
         {
             while (_running)

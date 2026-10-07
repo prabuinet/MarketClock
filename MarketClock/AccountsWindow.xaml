@@ -28,7 +28,7 @@
             <Setter Property="Padding" Value="8,6"/>
             <Setter Property="Margin" Value="0,4,0,12"/>
         </Style>
-        <Style TargetType="Button">
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
             <Setter Property="Background" Value="#18FFFFFF"/>
             <Setter Property="Foreground" Value="White"/>
@@ -138,7 +138,7 @@
 
             <TextBlock x:Name="FormMessageTextBlock"
                        Grid.Row="2"
-                       Foreground="Fuchsia"
+                       Foreground="{DynamicResource AccentBrush}"
                        FontSize="12"
                        TextWrapping="Wrap"
                        Margin="0,6,0,0"/>
@@ -187,7 +187,7 @@
                 <ProgressBar IsIndeterminate="True"
                              Width="220"
                              Height="4"
-                             Foreground="Fuchsia"
+                             Foreground="{DynamicResource AccentBrush}"
                              Background="#22FFFFFF"
                              BorderThickness="0"/>
             </StackPanel>

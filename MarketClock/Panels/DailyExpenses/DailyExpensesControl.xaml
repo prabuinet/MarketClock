@@ -93,7 +93,7 @@
                                     <TextBlock Grid.Column="1"
                                                Text="{Binding Amount, StringFormat={}{0:N2}}"
                                                Style="{StaticResource PanelText}"
-                                               Foreground="Fuchsia"
+                                               Foreground="{DynamicResource AccentBrush}"
                                                Margin="10,0,4,0"/>
                                 </Grid>
                             </Button>

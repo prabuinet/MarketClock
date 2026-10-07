@@ -18,7 +18,6 @@ namespace MarketClock.Panels
         /// <remarks>It covers the days from From up to, but not including, To.</remarks>
         private sealed record ExpenseBar(string Label, decimal Amount, DateTime From, DateTime To, string Title);
 
-        private static readonly Media.Brush BarBrush = Media.Brushes.Fuchsia;
         private static readonly Media.Brush BarHoverBrush = Media.Brushes.LightCyan;
 
         private IReadOnlyList<Account> accounts = Array.Empty<Account>();
@@ -97,8 +96,8 @@ namespace MarketClock.Panels
 
         private void UpdateModeButtons()
         {
-            TableModeButton.Foreground = chartMode ? Media.Brushes.White : Media.Brushes.Fuchsia;
-            ChartModeButton.Foreground = chartMode ? Media.Brushes.Fuchsia : Media.Brushes.White;
+            Theme.SetAccent(TableModeButton, ForegroundProperty, !chartMode, Media.Brushes.White);
+            Theme.SetAccent(ChartModeButton, ForegroundProperty, chartMode, Media.Brushes.White);
         }
 
         private void Range_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -324,9 +323,9 @@ namespace MarketClock.Panels
                 {
                     Width = barWidth,
                     Height = barHeight,
-                    Fill = BarBrush,
                     IsHitTestVisible = false,
                 };
+                rectangle.SetResourceReference(System.Windows.Shapes.Shape.FillProperty, Theme.AccentKey);
                 System.Windows.Controls.Canvas.SetLeft(rectangle, index * slot + gap / 2);
                 System.Windows.Controls.Canvas.SetTop(rectangle, height - barHeight);
                 ChartCanvas.Children.Add(rectangle);
@@ -381,7 +380,7 @@ namespace MarketClock.Panels
 
             if (hoverIndex >= 0 && hoverIndex < ChartCanvas.Children.Count)
             {
-                ((System.Windows.Shapes.Rectangle)ChartCanvas.Children[hoverIndex]).Fill = BarBrush;
+                ((System.Windows.Shapes.Rectangle)ChartCanvas.Children[hoverIndex]).SetResourceReference(System.Windows.Shapes.Shape.FillProperty, Theme.AccentKey);
             }
 
             if (index >= 0 && index < ChartCanvas.Children.Count)

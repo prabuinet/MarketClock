@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System.Windows;
 using System.Windows.Threading;
 
 namespace MarketClock
@@ -11,24 +10,10 @@ namespace MarketClock
         private string currentTime = "";
 
         [ObservableProperty]
-        private string timerCountDown = "";
-
-        [ObservableProperty]
-        private bool isTimerRunning;
-
-        [ObservableProperty]
         private string jeeDays = "";
 
         [ObservableProperty]
         private string jeeHours = "";
-
-        [ObservableProperty]
-        private Visibility timerVisibility = Visibility.Collapsed;
-
-        // Timer for Reminder
-        private readonly DispatcherTimer _timer = new();
-        private DateTime _timerStartTime;
-        private TimeSpan _timerInterval;
 
         // Clock Related Fields
         private readonly DispatcherTimer _clockTimer = new()
@@ -38,7 +23,6 @@ namespace MarketClock
 
         public MainWindowViewModel()
         {
-            _timer.Tick += Timer_Elapsed;
             _clockTimer.Tick += (_, _) => UpdateClock();
 
             UpdateClock();
@@ -49,8 +33,6 @@ namespace MarketClock
         {
             UpdateDateTime();
             UpdateJEEHours();
-
-            TimerCountDown = IsTimerRunning ? GetRemainingString() : "00:00:00";
         }
 
         void UpdateJEEHours()
@@ -68,7 +50,6 @@ namespace MarketClock
         void Exit()
         {
             _clockTimer.Stop();
-            StopTimer();
             ComputerUsageMonitor.Stop();
         }
 
@@ -76,54 +57,6 @@ namespace MarketClock
         void Loaded()
         {
             
-        }
-
-        public void StartTimer(int minutes)
-        {
-            if (minutes <= 0)
-            {
-                StopTimer();
-                return;
-            }
-
-            _timer.Stop();
-            _timerStartTime = DateTime.Now;
-            _timerInterval = TimeSpan.FromMinutes(minutes);
-            _timer.Interval = _timerInterval;
-            IsTimerRunning = true;
-            TimerCountDown = GetRemainingString();
-            _timer.Start();
-        }
-
-        private void Timer_Elapsed(object? sender, EventArgs e)
-        {
-            _timer.Stop();
-
-            // Play Sound
-            SoundPlayerHelper.PlayResourceMp3("pack://application:,,,/sounds/bell.mp3", 1.0f);
-            IsTimerRunning = false;
-        }
-
-        TimeSpan GetRemainingTime()
-        {
-            var elapsed = DateTime.Now - _timerStartTime;
-            var remaining = _timerInterval - elapsed;
-            return remaining < TimeSpan.Zero ? TimeSpan.Zero : remaining;
-        }
-
-        string GetRemainingString()
-        {
-            return GetRemainingTime().ToString(@"hh\:mm\:ss");
-        }
-        partial void OnIsTimerRunningChanged(bool value)
-        {
-            TimerVisibility = value ? Visibility.Visible : Visibility.Collapsed;
-        }
-
-        internal void StopTimer()
-        {
-            IsTimerRunning = false;
-            _timer.Stop();
         }
     }
 }

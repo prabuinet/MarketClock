@@ -12,7 +12,7 @@ namespace MarketClock
     //   - lets the gaps be dragged to resize columns, panels and the bottom strip
     //   - lets a panel be dragged by the small handle at its top edge into any zone
     //   - saves the arrangement after every change (see DashboardLayout)
-    // Which panels are shown at all is still decided by the Panels menu (MainWindow.Panels.cs).
+    // Which panels are shown at all is decided in the column menus (MainWindow.Panels.cs).
     public partial class MainWindow
     {
         private const double DashboardGap = 8;        // thickness of the draggable gaps
@@ -82,7 +82,12 @@ namespace MarketClock
             }
 
             e.Handled = true;
+            ToggleColumn(index);
+        }
 
+        /// <summary>Shows a hidden column or hides a shown one (its F-key, or its menu).</summary>
+        private void ToggleColumn(int index)
+        {
             var column = dashboardLayout.Columns[index];
             column.Visible = !column.Visible;
             dashboardLayout.Save();

@@ -58,7 +58,7 @@
                                Text="-"
                                Style="{StaticResource PanelText}"
                                FontSize="14"
-                               Foreground="Fuchsia"
+                               Foreground="{DynamicResource AccentBrush}"
                                HorizontalAlignment="Center"/>
                 </StackPanel>
                 <Border BorderBrush="#33FFFFFF" BorderThickness="0.5,0,0,0">
@@ -97,9 +97,9 @@
                     <ColumnDefinition x:Name="ExpenseRestColumn" Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Border Grid.ColumnSpan="2" Background="#10FFFFFF" CornerRadius="3"/>
-                <Border Background="Fuchsia" CornerRadius="3"/>
+                <Border Background="{DynamicResource AccentBrush}" CornerRadius="3"/>
             </Grid>
-            <TextBlock x:Name="ExpenseBarText" Grid.Row="0" Grid.Column="2" Text="-" Style="{StaticResource PanelText}" Foreground="Fuchsia" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock x:Name="ExpenseBarText" Grid.Row="0" Grid.Column="2" Text="-" Style="{StaticResource PanelText}" Foreground="{DynamicResource AccentBrush}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
 
             <TextBlock Grid.Row="1" Text="Income" Style="{StaticResource PanelText}" Foreground="#CCFFFFFF" VerticalAlignment="Center"/>
             <Grid Grid.Row="1" Grid.Column="1" Height="16" Margin="10,6">

@@ -32,7 +32,7 @@
 
         <TextBlock x:Name="MessageTextBlock"
                    Grid.Row="3"
-                   Foreground="Fuchsia"
+                   Foreground="{DynamicResource AccentBrush}"
                    FontSize="12"
                    TextWrapping="Wrap"
                    Margin="0,6,0,0"/>

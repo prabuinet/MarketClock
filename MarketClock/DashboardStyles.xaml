@@ -2,6 +2,16 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!-- Fonts, styles and templates shared by the dashboard (MainWindow.xaml) and its panels
          (the Panels folder). Merged into the application resources in App.xaml. -->
+    <!-- The highlight colour, in its strengths. These are the Dragon Fruit theme's; choosing a theme
+         replaces them (see Theme.cs), which is why they are always used through DynamicResource. -->
+    <SolidColorBrush x:Key="AccentBrush" Color="#FFFF00FF"/>
+    <SolidColorBrush x:Key="AccentTintBrush" Color="#22FF00FF"/>
+    <SolidColorBrush x:Key="AccentSoftBrush" Color="#33FF00FF"/>
+    <SolidColorBrush x:Key="AccentPressedBrush" Color="#44FF00FF"/>
+    <SolidColorBrush x:Key="AccentLineBrush" Color="#55FF00FF"/>
+    <SolidColorBrush x:Key="AccentBorderBrush" Color="#AAFF00FF"/>
+    <Color x:Key="AccentLineColor">#55FF00FF</Color>
+
     <FontFamily x:Key="Digital7Font">pack://application:,,,/fonts/#digital-7 (mono)</FontFamily>
     <FontFamily x:Key="JetBrainsMonoNLThin">pack://application:,,,/fonts/#JetBrainsMonoNL-Thin</FontFamily>
     <FontFamily x:Key="JetBrainsMonoThin">pack://application:,,,/fonts/#JetBrains Mono Thin</FontFamily>
@@ -13,9 +23,10 @@
         <Setter Property="CornerRadius" Value="14"/>
         <Setter Property="Padding" Value="12"/>
     </Style>
+    <!-- The title of a panel, and the name of a column: in the theme's colour. -->
     <Style x:Key="PanelHeader" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
-        <Setter Property="Foreground" Value="#CCFFFFFF"/>
+        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Margin" Value="0,0,0,8"/>
     </Style>
@@ -102,7 +113,7 @@
                             <Setter TargetName="RowBorder" Property="Background" Value="#18FFFFFF"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="RowBorder" Property="Background" Value="#33FF00FF"/>
+                            <Setter TargetName="RowBorder" Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -128,8 +139,8 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="ButtonBorder" Property="Background" Value="#22FF00FF"/>
-                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#AAFF00FF"/>
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource AccentTintBrush}"/>
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{DynamicResource AccentBorderBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -153,7 +164,7 @@
                             <Setter TargetName="IconBorder" Property="Background" Value="#22FFFFFF"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="IconBorder" Property="Background" Value="#33FF00FF"/>
+                            <Setter TargetName="IconBorder" Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -176,10 +187,10 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="#55FF00FF"/>
+                <Setter Property="Background" Value="{DynamicResource AccentLineBrush}"/>
             </Trigger>
             <Trigger Property="IsDragging" Value="True">
-                <Setter Property="Background" Value="#AAFF00FF"/>
+                <Setter Property="Background" Value="{DynamicResource AccentBorderBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
@@ -209,7 +220,7 @@
                         <Setter Property="Foreground" Value="LightCyan"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsDebit}" Value="True">
-                                <Setter Property="Foreground" Value="Fuchsia"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -217,4 +228,170 @@
             </TextBlock>
         </Grid>
     </DataTemplate>
+
+    <!-- Every ordinary button in the app (the forms and Settings; the dashboard's own buttons have
+         the keyed styles above). It replaces the Windows look, whose light blue hover does not
+         suit the dark windows, with the theme's colour. A window that restyles its
+         buttons builds on this with BasedOn="{StaticResource {x:Type Button}}". -->
+    <Style TargetType="Button">
+        <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
+        <Setter Property="Background" Value="#18FFFFFF"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderBrush" Value="#44FFFFFF"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="10,7"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="4"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          RecognizesAccessKey="True"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource AccentTintBrush}"/>
+                            <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{DynamicResource AccentBorderBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource AccentPressedBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.45"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Right-click menus, in the dashboard's look: dark, rounded, highlights in the theme's colour. These have no
+         key, so they apply to every menu in the app. -->
+    <Style TargetType="ContextMenu">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="HasDropShadow" Value="False"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ContextMenu">
+                    <Border Background="#F2141414"
+                            BorderBrush="#44FFFFFF"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="4"
+                            SnapsToDevicePixels="True">
+                        <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- One line of a menu: tick or icon, caption, shortcut key, and an arrow when it opens a sub-menu. -->
+    <Style TargetType="MenuItem">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="MenuItem">
+                    <Border x:Name="ItemBorder" Background="Transparent" CornerRadius="4" Padding="8,6" SnapsToDevicePixels="True">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuItemGesture"/>
+                                <ColumnDefinition Width="16"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter x:Name="IconPresenter"
+                                              ContentSource="Icon"
+                                              HorizontalAlignment="Left"
+                                              VerticalAlignment="Center"/>
+                            <Path x:Name="CheckGlyph"
+                                  Data="M 0,4.5 L 3.5,8 L 10,1"
+                                  Stroke="{DynamicResource AccentBrush}"
+                                  StrokeThickness="1.8"
+                                  HorizontalAlignment="Left"
+                                  VerticalAlignment="Center"
+                                  Visibility="Collapsed"/>
+                            <ContentPresenter Grid.Column="1"
+                                              ContentSource="Header"
+                                              RecognizesAccessKey="True"
+                                              VerticalAlignment="Center"/>
+                            <TextBlock Grid.Column="2"
+                                       Text="{TemplateBinding InputGestureText}"
+                                       Foreground="#80FFFFFF"
+                                       FontSize="11"
+                                       Margin="28,0,0,0"
+                                       VerticalAlignment="Center"/>
+                            <Path x:Name="SubmenuArrow"
+                                  Grid.Column="3"
+                                  Data="M 0,0 L 4,4 L 0,8"
+                                  Stroke="#CCFFFFFF"
+                                  StrokeThickness="1.5"
+                                  HorizontalAlignment="Right"
+                                  VerticalAlignment="Center"
+                                  Visibility="Collapsed"/>
+                            <Popup x:Name="PART_Popup"
+                                   Placement="Right"
+                                   HorizontalOffset="6"
+                                   VerticalOffset="-11"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   PopupAnimation="Fade"
+                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}">
+                                <Border Background="#F2141414"
+                                        BorderBrush="#44FFFFFF"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="4"
+                                        Grid.IsSharedSizeScope="True"
+                                        SnapsToDevicePixels="True">
+                                    <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Cycle"/>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="CheckGlyph" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="IconPresenter" Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="Role" Value="SubmenuHeader">
+                            <Setter TargetName="SubmenuArrow" Property="Visibility" Value="Visible"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ItemBorder" Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- The line between groups of menu items. -->
+    <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Separator">
+                    <Border Height="1" Background="#33FFFFFF" Margin="6,4"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

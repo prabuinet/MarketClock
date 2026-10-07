@@ -8,7 +8,6 @@ namespace MarketClock.Panels
     // (both included, 7:00 AM to 11:00 PM unless changed).
     public partial class HourlyBellControl : System.Windows.Controls.UserControl
     {
-        private static readonly Media.Brush HourlyBellActiveBrush = Media.Brushes.DeepPink;
         private static readonly Media.Brush HourlyBellIdleBrush =
             new Media.SolidColorBrush(Media.Color.FromArgb(0x66, 0xFF, 0xFF, 0xFF));
 
@@ -122,7 +121,7 @@ namespace MarketClock.Panels
             HourlyBellCountdownText.Text = withinHours
                 ? $"{(int)remaining.TotalMinutes:00}:{remaining.Seconds:00}"
                 : $"{(int)remaining.TotalHours}:{remaining.Minutes:00}:{remaining.Seconds:00}";
-            HourlyBellCountdownText.Foreground = withinHours ? HourlyBellActiveBrush : HourlyBellIdleBrush;
+            Theme.SetAccent(HourlyBellCountdownText, System.Windows.Controls.TextBlock.ForegroundProperty, withinHours, HourlyBellIdleBrush);
 
             var nextText = AppSettings.FormatTimeOfDay(nextHourlyBell.TimeOfDay);
             HourlyBellNextText.Text = withinHours

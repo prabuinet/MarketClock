@@ -8,13 +8,8 @@
              d:DesignWidth="320">
     <!-- Transparent, so a click anywhere in the panel counts: it moves on to the next clock. -->
     <Grid Background="Transparent" MouseLeftButtonDown="Clock_MouseLeftButtonDown">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
         <!-- Digital clock -->
-        <Viewbox x:Name="DigitalClock" Grid.Row="0">
+        <Viewbox x:Name="DigitalClock">
             <TextBlock Text="{Binding CurrentTime}"
                     Padding="5"
                     Foreground="White"
@@ -26,7 +21,7 @@
         </Viewbox>
 
         <!-- Analog clock: the date on the left, the clock face on the right -->
-        <Grid x:Name="AnalogClock" Grid.Row="0" Visibility="Collapsed">
+        <Grid x:Name="AnalogClock" Visibility="Collapsed">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="3*"/>
@@ -72,32 +67,14 @@
                             <RotateTransform x:Name="MinuteRotation" CenterX="100" CenterY="100"/>
                         </Line.RenderTransform>
                     </Line>
-                    <Line X1="100" Y1="120" X2="100" Y2="16" Stroke="Fuchsia" StrokeThickness="1.2">
+                    <Line X1="100" Y1="120" X2="100" Y2="16" Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.2">
                         <Line.RenderTransform>
                             <RotateTransform x:Name="SecondRotation" CenterX="100" CenterY="100"/>
                         </Line.RenderTransform>
                     </Line>
-                    <Ellipse Width="8" Height="8" Canvas.Left="96" Canvas.Top="96" Fill="Fuchsia"/>
+                    <Ellipse Width="8" Height="8" Canvas.Left="96" Canvas.Top="96" Fill="{DynamicResource AccentBrush}"/>
                 </Canvas>
             </Viewbox>
         </Grid>
-
-        <!-- Countdown timer: shown under the clock while a timer is running. -->
-        <Viewbox Grid.Row="1"
-                 MaxHeight="90"
-                 HorizontalAlignment="Center"
-                 VerticalAlignment="Center"
-                 Visibility="{Binding TimerVisibility}">
-            <TextBlock
-                Text="{Binding TimerCountDown}"
-                Padding="5"
-                Foreground="Fuchsia"
-                FontFamily="{StaticResource JetBrainsMonoThin}"
-                FontSize="14"
-                TextAlignment="Center"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-            />
-        </Viewbox>
     </Grid>
 </UserControl>

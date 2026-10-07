@@ -28,7 +28,7 @@
             <Setter Property="CaretBrush" Value="White"/>
             <Setter Property="Padding" Value="8,6"/>
         </Style>
-        <Style TargetType="Button">
+        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
             <Setter Property="Background" Value="#18FFFFFF"/>
             <Setter Property="Foreground" Value="White"/>
@@ -71,7 +71,7 @@
 
         <TextBlock x:Name="MessageTextBlock"
                    Text="Loading accounts..."
-                   Foreground="Fuchsia"
+                   Foreground="{DynamicResource AccentBrush}"
                    FontSize="12"
                    TextWrapping="Wrap"
                    Margin="0,8,0,0"/>

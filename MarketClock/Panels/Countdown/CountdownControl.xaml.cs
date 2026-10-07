@@ -16,7 +16,6 @@ namespace MarketClock.Panels
         private const int LongestPreset = 99 * 3600 + 59 * 60 + 59;
 
         private static readonly Media.Brush RunningBrush = Media.Brushes.White;
-        private static readonly Media.Brush FinishedBrush = Media.Brushes.Fuchsia;
 
         private readonly DispatcherTimer timer = new() { Interval = TimeSpan.FromMilliseconds(200) };
         private List<int> presets = StandardPresets.ToList(); // seconds, in the order shown
@@ -75,7 +74,7 @@ namespace MarketClock.Panels
             timer.Stop();
             StopButton.Visibility = Visibility.Hidden;
             CountdownText.Text = "00:00";
-            CountdownText.Foreground = FinishedBrush;
+            CountdownText.SetResourceReference(Controls.TextBlock.ForegroundProperty, Theme.AccentKey);
             SetStatus("");
             ButtonsArea.Visibility = Visibility.Visible; // back again, under the 00:00
 

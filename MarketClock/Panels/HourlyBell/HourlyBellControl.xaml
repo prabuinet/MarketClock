@@ -15,7 +15,7 @@
             <TextBlock x:Name="HourlyBellCountdownText"
                        Text="00:00"
                        Padding="5"
-                       Foreground="DeepPink"
+                       Foreground="{DynamicResource AccentBrush}"
                        FontFamily="{StaticResource JetBrainsMonoThin}"
                        FontSize="14"
                        TextAlignment="Center"

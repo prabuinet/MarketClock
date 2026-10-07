@@ -25,7 +25,7 @@
                                 <Setter TargetName="IconBorder" Property="Background" Value="#22FFFFFF"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="IconBorder" Property="Background" Value="#33FF00FF"/>
+                                <Setter TargetName="IconBorder" Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -103,7 +103,7 @@
                             Width="0"
                             Height="4"
                             CornerRadius="2"
-                            Background="Fuchsia"
+                            Background="{DynamicResource AccentBrush}"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"/>
                 </Grid>
@@ -176,7 +176,7 @@
                                                             Height="10"
                                                             Margin="0,0,6,0"
                                                             VerticalAlignment="Center"
-                                                            Foreground="Fuchsia"
+                                                            Foreground="{DynamicResource AccentBrush}"
                                                             Visibility="Hidden"/>
                                 <TextBlock x:Name="QueueName"
                                            Text="{Binding Name}"
@@ -190,7 +190,7 @@
                                 <Setter TargetName="QueueRow" Property="Background" Value="#18FFFFFF"/>
                             </Trigger>
                             <DataTrigger Binding="{Binding IsCurrent}" Value="True">
-                                <Setter TargetName="QueueRow" Property="Background" Value="#33FF00FF"/>
+                                <Setter TargetName="QueueRow" Property="Background" Value="{DynamicResource AccentSoftBrush}"/>
                                 <Setter TargetName="QueueIcon" Property="Visibility" Value="Visible"/>
                                 <Setter TargetName="QueueName" Property="Foreground" Value="White"/>
                             </DataTrigger>

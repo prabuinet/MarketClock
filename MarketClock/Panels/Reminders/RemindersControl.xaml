@@ -43,7 +43,7 @@
                         </Grid>
                         <DataTemplate.Triggers>
                             <DataTrigger Binding="{Binding IsUrgent}" Value="True">
-                                <Setter TargetName="DueText" Property="Foreground" Value="Fuchsia"/>
+                                <Setter TargetName="DueText" Property="Foreground" Value="{DynamicResource AccentBrush}"/>
                             </DataTrigger>
                         </DataTemplate.Triggers>
                     </DataTemplate>

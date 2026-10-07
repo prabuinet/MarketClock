@@ -22,7 +22,7 @@
                                     <Setter TargetName="ThumbBorder" Property="Background" Value="#88FFFFFF"/>
                                 </Trigger>
                                 <Trigger Property="IsDragging" Value="True">
-                                    <Setter TargetName="ThumbBorder" Property="Background" Value="#AAFF00FF"/>
+                                    <Setter TargetName="ThumbBorder" Property="Background" Value="{DynamicResource AccentBorderBrush}"/>
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
