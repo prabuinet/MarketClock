@@ -3,9 +3,18 @@ using MarketClock.Data;
 namespace MarketClock.Panels
 {
     /// <summary>One line in a dashboard transaction list.</summary>
-    public sealed record DashboardTransactionRow(string Date, string Title, string Account, decimal Amount)
+    public sealed record DashboardTransactionRow(
+        string Date,
+        string Title,
+        string Account,
+        decimal Amount,
+        int TransactionId,
+        bool IsTransfer)
     {
         public bool IsDebit => Amount < 0;
+
+        /// <summary>The whole line as text, for asking "delete this one?".</summary>
+        public string Summary => $"{Date} · {Title} · {Account} · {Amount:N2}";
     }
 
     // What the Recent Transactions and Top Transactions panels have in common.
@@ -36,7 +45,9 @@ namespace MarketClock.Panels
                 transaction.Date.ToString("dd MMM"),
                 title,
                 account.Name,
-                transaction.Amount);
+                transaction.Amount,
+                transaction.Id,
+                transaction.IsTransfer);
         }
     }
 }

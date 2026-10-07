@@ -54,6 +54,9 @@ namespace MarketClock
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
+        /// <summary>Raised after a transaction was edited or deleted here, so the dashboard can reload.</summary>
+        public event EventHandler? TransactionsChanged;
+
         public ObservableCollection<Account> Accounts { get; } = new();
 
         public Account? SelectedAccount
@@ -232,6 +235,118 @@ namespace MarketClock
             }
 
             FormMessageTextBlock.Text = "";
+        }
+
+        /// <summary>
+        /// Reads the accounts and their transactions again, keeping the same account selected.
+        /// Called after a transaction is edited or deleted, here or on the dashboard.
+        /// </summary>
+        public void Reload()
+        {
+            if (accountStore == null)
+            {
+                return;
+            }
+
+            var selectedId = SelectedAccount?.Id;
+            var editingId = editingAccount?.Id;
+            var accounts = accountStore.GetAccounts();
+
+            Accounts.Clear();
+            foreach (var account in accounts)
+            {
+                Accounts.Add(account);
+            }
+
+            SelectedAccount = Accounts.FirstOrDefault(a => a.Id == selectedId) ?? Accounts.FirstOrDefault();
+
+            // The account form, if it is open, must carry on with the account as it was just read.
+            if (editingId != null)
+            {
+                editingAccount = Accounts.FirstOrDefault(a => a.Id == editingId);
+                if (editingAccount == null)
+                {
+                    ShowCreateAccountForm(false);
+                }
+            }
+        }
+
+        private void EditTransaction_Click(object sender, RoutedEventArgs e)
+        {
+            if (TransactionsGrid.SelectedItem is not AccountTransaction transaction)
+            {
+                FormMessageTextBlock.Text = "Select a transaction to edit.";
+                return;
+            }
+
+            EditTransaction(transaction);
+        }
+
+        private void DeleteTransaction_Click(object sender, RoutedEventArgs e)
+        {
+            if (TransactionsGrid.SelectedItem is not AccountTransaction transaction || SelectedAccount == null)
+            {
+                FormMessageTextBlock.Text = "Select a transaction to delete.";
+                return;
+            }
+
+            FormMessageTextBlock.Text = "";
+
+            var summary = $"{transaction.Date:dd MMM yyyy} · {transaction.Description} · {SelectedAccount.Name} · {transaction.Amount:N2}";
+
+            if (TransactionActions.Delete(this, transaction.Id, summary, transaction.IsTransfer))
+            {
+                Reload();
+                TransactionsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private void TransactionsGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Only a double-click on a row: not on a column header or the empty space below the rows.
+            if (TransactionUnder(e.OriginalSource) is { } transaction)
+            {
+                EditTransaction(transaction);
+            }
+        }
+
+        private void TransactionsGrid_ContextMenuOpening(object sender, System.Windows.Controls.ContextMenuEventArgs e)
+        {
+            // A right-click does not select the row by itself, and the menu works on the selected row.
+            if (TransactionUnder(e.OriginalSource) is { } transaction)
+            {
+                TransactionsGrid.SelectedItem = transaction;
+            }
+            else
+            {
+                e.Handled = true; // not on a row: no menu
+            }
+        }
+
+        private void EditTransaction(AccountTransaction transaction)
+        {
+            FormMessageTextBlock.Text = "";
+
+            if (TransactionActions.Edit(this, transaction.Id))
+            {
+                Reload();
+                TransactionsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>The transaction of the grid row that <paramref name="source"/> is part of, or null.</summary>
+        private static AccountTransaction? TransactionUnder(object source)
+        {
+            var element = source as DependencyObject;
+
+            while (element != null && element is not System.Windows.Controls.DataGridRow)
+            {
+                element = element is System.Windows.Media.Visual
+                    ? System.Windows.Media.VisualTreeHelper.GetParent(element)
+                    : LogicalTreeHelper.GetParent(element);
+            }
+
+            return (element as System.Windows.Controls.DataGridRow)?.Item as AccountTransaction;
         }
 
         private static bool TryParseAmount(string text, out decimal amount)

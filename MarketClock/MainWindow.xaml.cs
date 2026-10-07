@@ -162,9 +162,9 @@ namespace MarketClock
             }
 
             // Quick repeated clicks on the song list, the equalizer or a panel's mode buttons
-            // are clicks, not a resize request.
+            // are clicks, not a resize request; a double-click on a recent transaction edits it.
             if (SongsPanel.IsMouseOver || EqualizerPanel.IsMouseOver || DailyExpensesPanel.IsMouseOver
-                || MonthSummaryPanel.IsMouseOver || CountdownPanel.IsMouseOver)
+                || MonthSummaryPanel.IsMouseOver || CountdownPanel.IsMouseOver || RecentPanel.IsMouseOver)
             {
                 return;
             }
@@ -199,6 +199,7 @@ namespace MarketClock
                 };
                 accountsWindow.Closed += (_, _) => accountsWindow = null;
                 accountsWindow.Closed += (_, _) => RefreshDashboard();
+                accountsWindow.TransactionsChanged += (_, _) => RefreshDashboard();
                 accountsWindow.Show();
                 return;
             }

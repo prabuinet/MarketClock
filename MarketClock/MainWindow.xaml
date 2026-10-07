@@ -107,7 +107,7 @@
                 </Border>
 
                 <Border x:Name="RecentPanel" Style="{StaticResource PanelCard}">
-                    <panels:RecentTransactionsControl x:Name="RecentView"/>
+                    <panels:RecentTransactionsControl x:Name="RecentView" TransactionsChanged="Transactions_Changed"/>
                 </Border>
 
                 <Border x:Name="TopPanel" Style="{StaticResource PanelCard}">

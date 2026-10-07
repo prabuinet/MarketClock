@@ -9,6 +9,20 @@
     <StackPanel>
         <TextBlock Text="Recent Transactions" Style="{StaticResource PanelHeader}"/>
         <TextBlock x:Name="RecentEmptyText" Text="Loading..." Style="{StaticResource PanelEmptyText}"/>
-        <ItemsControl x:Name="RecentTransactionsList" ItemTemplate="{StaticResource DashboardTransactionTemplate}"/>
+        <!-- The transparent background makes the whole width of a row react to the mouse, not only its text. -->
+        <ItemsControl x:Name="RecentTransactionsList"
+                      ItemTemplate="{StaticResource DashboardTransactionTemplate}"
+                      Background="Transparent"
+                      ToolTip="Double-click to edit, right-click to edit or delete"
+                      MouseLeftButtonDown="RecentTransactionsList_MouseLeftButtonDown"
+                      ContextMenuOpening="RecentTransactionsList_ContextMenuOpening">
+            <!-- Its own menu, so a right-click on a transaction does not open the window's menu. -->
+            <ItemsControl.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Edit" Click="EditMenu_Click"/>
+                    <MenuItem Header="Delete" Click="DeleteMenu_Click"/>
+                </ContextMenu>
+            </ItemsControl.ContextMenu>
+        </ItemsControl>
     </StackPanel>
 </UserControl>

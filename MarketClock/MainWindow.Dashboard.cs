@@ -7,6 +7,13 @@ namespace MarketClock
     // daily expenses and this month's income and expense.
     public partial class MainWindow
     {
+        /// <summary>A transaction was edited or deleted on the dashboard: show it everywhere.</summary>
+        private void Transactions_Changed(object? sender, EventArgs e)
+        {
+            RefreshDashboard();
+            accountsWindow?.Reload();
+        }
+
         /// <summary>Reloads the money panels from the database without blocking the window.</summary>
         private async void RefreshDashboard()
         {

@@ -156,16 +156,37 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <StackPanel Grid.Row="0" Margin="0,0,0,12">
-                <TextBlock Text="Transactions" FontSize="20" Margin="0,0,0,4"/>
-                <TextBlock Text="{Binding SelectedAccount.Name, TargetNullValue=Select or create an account}"
-                           Foreground="White"
-                           FontSize="12"/>
-            </StackPanel>
+            <Grid Grid.Row="0" Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="Transactions" FontSize="20" Margin="0,0,0,4"/>
+                    <TextBlock Text="{Binding SelectedAccount.Name, TargetNullValue=Select or create an account}"
+                               Foreground="White"
+                               FontSize="12"/>
+                </StackPanel>
+                <!-- These work on the row selected below; a double-click or a right-click on a row does the same. -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <Button Content="Edit" Click="EditTransaction_Click" Margin="0,0,8,0"/>
+                    <Button Content="Delete" Click="DeleteTransaction_Click"/>
+                </StackPanel>
+            </Grid>
 
-            <DataGrid Grid.Row="1"
+            <DataGrid x:Name="TransactionsGrid"
+                      Grid.Row="1"
                       ItemsSource="{Binding SelectedAccount.Transactions}"
-                      AutoGenerateColumns="False">
+                      AutoGenerateColumns="False"
+                      SelectionMode="Single"
+                      MouseDoubleClick="TransactionsGrid_MouseDoubleClick"
+                      ContextMenuOpening="TransactionsGrid_ContextMenuOpening">
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Edit" Click="EditTransaction_Click"/>
+                        <MenuItem Header="Delete" Click="DeleteTransaction_Click"/>
+                    </ContextMenu>
+                </DataGrid.ContextMenu>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat={}{0:dd-MM-yyyy}}" Width="110"/>
                     <DataGridTextColumn Header="Description" Binding="{Binding Description}" Width="*"/>

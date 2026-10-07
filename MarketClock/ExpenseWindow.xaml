@@ -61,12 +61,13 @@
         <TextBlock Text="Description (optional)" Style="{StaticResource FieldLabel}"/>
         <TextBox x:Name="DescriptionTextBox"/>
 
-        <TextBlock Text="Amount" Style="{StaticResource FieldLabel}"/>
+        <TextBlock x:Name="AmountLabel" Text="Amount" Style="{StaticResource FieldLabel}"/>
         <TextBox x:Name="AmountTextBox"/>
 
         <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
             <Button x:Name="SaveButton" Content="+ Add Expense" Click="Save_Click" IsDefault="True" IsEnabled="False" Margin="0,0,8,0"/>
             <Button Content="Cancel" IsCancel="True"/>
+            <Button x:Name="DeleteButton" Content="Delete" Click="Delete_Click" Visibility="Collapsed" Margin="8,0,0,0"/>
         </StackPanel>
 
         <TextBlock x:Name="MessageTextBlock"
