@@ -11,9 +11,6 @@ namespace MarketClock
         private string currentTime = "";
 
         [ObservableProperty]
-        private string activeDuration = "";
-
-        [ObservableProperty]
         private string timerCountDown = "";
 
         [ObservableProperty]
@@ -53,9 +50,6 @@ namespace MarketClock
             UpdateDateTime();
             UpdateJEEHours();
 
-            //// Update last mouse moved time ago
-            ActiveDuration = GetTimeDiffAgo(ComputerUsageMonitor.GetActiveDuration());
-
             TimerCountDown = IsTimerRunning ? GetRemainingString() : "00:00:00";
         }
 
@@ -68,26 +62,6 @@ namespace MarketClock
         void UpdateDateTime()
         {
             CurrentTime = DateTime.Now.ToString("dd-MM-yyyy ddd\nhh:mm:ss tt").ToUpper();
-        }
-
-        private string GetTimeDiffAgo(TimeSpan diff)
-        {
-            if (diff.TotalSeconds < 60)
-            {
-                return $"{(int)diff.TotalSeconds} seconds";
-            }
-            else if (diff.TotalMinutes < 60)
-            {
-                return $"{(int)diff.TotalMinutes} minute" + (diff.TotalMinutes > 1 ? "s" : "");
-            }
-            else if (diff.TotalHours < 24)
-            {
-                return $"{(int)diff.TotalHours} hour" + (diff.TotalHours > 1 ? "s" : "");
-            }
-            else
-            {
-                return $"{(int)diff.TotalDays} days";
-            }
         }
 
         [RelayCommand]

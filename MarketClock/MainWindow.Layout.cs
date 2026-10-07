@@ -1,11 +1,13 @@
 using System.Windows;
+using MahApps.Metro.IconPacks;
 using Controls = System.Windows.Controls;
 using Media = System.Windows.Media;
 
 namespace MarketClock
 {
-    // Dashboard layout. The dashboard is four columns plus a strip along the bottom
-    // ("zones"); each zone stacks panels top to bottom. This file:
+    // Dashboard layout. The dashboard is up to eight columns plus a strip along the bottom
+    // ("zones"); each zone stacks panels top to bottom. A column has a heading that can be
+    // renamed, and F1 to F8 show or hide columns 1 to 8. This file:
     //   - builds the grid of columns, rows and draggable gaps from the saved layout
     //   - lets the gaps be dragged to resize columns, panels and the bottom strip
     //   - lets a panel be dragged by the small handle at its top edge into any zone
@@ -37,7 +39,6 @@ namespace MarketClock
             dashboardPanels["HourlyBell"] = HourlyBellPanel;
             dashboardPanels["Countdown"] = CountdownPanel;
             dashboardPanels["Jee"] = JeePanel;
-            dashboardPanels["Active"] = ActivePanel;
             dashboardPanels["NetWorth"] = NetWorthPanel;
             dashboardPanels["NetWorthGraph"] = NetWorthGraphPanel;
             dashboardPanels["Accounts"] = AccountsPanel;
@@ -61,6 +62,163 @@ namespace MarketClock
             }
 
             dashboardLayout = DashboardLayout.Load(dashboardPanels.Keys);
+
+            PreviewKeyDown += Dashboard_PreviewKeyDown;
+        }
+
+        // F1 to F8 show or hide columns 1 to 8.
+        private void Dashboard_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key < System.Windows.Input.Key.F1 || e.Key > System.Windows.Input.Key.F8
+                || System.Windows.Input.Keyboard.Modifiers != System.Windows.Input.ModifierKeys.None)
+            {
+                return;
+            }
+
+            var index = e.Key - System.Windows.Input.Key.F1;
+            if (index >= dashboardLayout.Columns.Count)
+            {
+                return;
+            }
+
+            e.Handled = true;
+
+            var column = dashboardLayout.Columns[index];
+            column.Visible = !column.Visible;
+            dashboardLayout.Save();
+            BuildDashboard();
+        }
+
+        /// <summary>
+        /// The heading of a column: its F-key, its name, and at the end an icon that turns the name
+        /// into a text box (pencil) and saves what was typed (tick). Enter also saves; Esc cancels.
+        /// </summary>
+        private FrameworkElement BuildColumnHeader(DashboardZone zone, int index)
+        {
+            var header = new Controls.Grid { Margin = new Thickness(4, 0, 0, 4) };
+            header.ColumnDefinitions.Add(new Controls.ColumnDefinition { Width = GridLength.Auto });
+            header.ColumnDefinitions.Add(new Controls.ColumnDefinition());
+            header.ColumnDefinitions.Add(new Controls.ColumnDefinition { Width = GridLength.Auto });
+
+            var key = new Controls.TextBlock
+            {
+                Text = $"F{index + 1}",
+                Style = (Style)FindResource("PanelEmptyText"),
+                FontSize = 10,
+                VerticalAlignment = System.Windows.VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 8, 0),
+                ToolTip = $"Press F{index + 1} to show or hide this column",
+            };
+
+            var name = new Controls.TextBlock
+            {
+                Text = zone.Name,
+                Style = (Style)FindResource("PanelHeader"),
+                Margin = new Thickness(0),
+                TextTrimming = TextTrimming.CharacterEllipsis,
+                VerticalAlignment = System.Windows.VerticalAlignment.Center,
+            };
+
+            var box = new Controls.TextBox
+            {
+                MaxLength = 40,
+                Visibility = Visibility.Collapsed,
+                Background = new Media.SolidColorBrush(Media.Color.FromArgb(0x14, 0xFF, 0xFF, 0xFF)),
+                Foreground = Media.Brushes.White,
+                CaretBrush = Media.Brushes.White,
+                BorderBrush = new Media.SolidColorBrush(Media.Color.FromArgb(0x33, 0xFF, 0xFF, 0xFF)),
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(4, 1, 4, 1),
+                FontFamily = (Media.FontFamily)FindResource("JetBrainsMonoRegular"),
+                FontSize = 12,
+                VerticalAlignment = System.Windows.VerticalAlignment.Center,
+            };
+
+            var icon = new PackIconMaterial { Kind = PackIconMaterialKind.PencilOutline, Width = 12, Height = 12 };
+            var button = new Controls.Button
+            {
+                Style = (Style)FindResource("PanelIconButton"),
+                Content = icon,
+                Foreground = new Media.SolidColorBrush(Media.Color.FromArgb(0x99, 0xFF, 0xFF, 0xFF)),
+                VerticalAlignment = System.Windows.VerticalAlignment.Center,
+                ToolTip = "Rename this column",
+            };
+
+            var editing = false;
+
+            void BeginEdit()
+            {
+                editing = true;
+                box.Text = zone.Name;
+                name.Visibility = Visibility.Collapsed;
+                box.Visibility = Visibility.Visible;
+                icon.Kind = PackIconMaterialKind.Check;
+                button.ToolTip = "Save the name";
+                box.Focus();
+                box.SelectAll();
+            }
+
+            void EndEdit(bool save)
+            {
+                if (!editing)
+                {
+                    return;
+                }
+
+                editing = false;
+
+                if (save)
+                {
+                    // An empty name goes back to the standard one.
+                    var typed = box.Text.Trim();
+                    zone.Name = typed.Length > 0 ? typed : DashboardLayout.DefaultColumnName(index);
+                    name.Text = zone.Name;
+                    dashboardLayout.Save();
+                }
+
+                box.Visibility = Visibility.Collapsed;
+                name.Visibility = Visibility.Visible;
+                icon.Kind = PackIconMaterialKind.PencilOutline;
+                button.ToolTip = "Rename this column";
+            }
+
+            button.Click += (_, _) =>
+            {
+                if (editing)
+                {
+                    EndEdit(save: true);
+                }
+                else
+                {
+                    BeginEdit();
+                }
+            };
+
+            box.KeyDown += (_, e) =>
+            {
+                if (e.Key == System.Windows.Input.Key.Enter)
+                {
+                    e.Handled = true;
+                    EndEdit(save: true);
+                }
+                else if (e.Key == System.Windows.Input.Key.Escape)
+                {
+                    e.Handled = true;
+                    EndEdit(save: false);
+                }
+            };
+
+            // Clicking elsewhere keeps what was typed.
+            box.LostKeyboardFocus += (_, _) => EndEdit(save: true);
+
+            Controls.Grid.SetColumn(name, 1);
+            Controls.Grid.SetColumn(box, 1);
+            Controls.Grid.SetColumn(button, 2);
+            header.Children.Add(key);
+            header.Children.Add(name);
+            header.Children.Add(box);
+            header.Children.Add(button);
+            return header;
         }
 
         private static void DetachPanel(Controls.Border panel)
@@ -108,7 +266,7 @@ namespace MarketClock
 
         /// <summary>
         /// Rebuilds the dashboard from the layout. While a panel is being dragged
-        /// (<paramref name="arranging"/>), empty zones are shown too so they can be dropped into.
+        /// (<paramref name="arranging"/>), the bottom strip is shown even when empty so it can be dropped into.
         /// </summary>
         private void BuildDashboard(bool arranging = false)
         {
@@ -126,13 +284,18 @@ namespace MarketClock
             var columnsGrid = new Controls.Grid();
             var columnSizes = NewSizeGroup();
 
-            foreach (var zone in dashboardLayout.Columns)
+            for (var index = 0; index < dashboardLayout.Columns.Count; index++)
             {
-                var slots = VisibleSlots(zone);
-                if (slots.Count == 0 && !arranging)
+                var zone = dashboardLayout.Columns[index];
+
+                // A column switched off with its F-key is left out altogether.
+                if (!zone.Visible)
                 {
                     continue;
                 }
+
+                // A column that is on is shown even with no panels in it: its heading and an empty outline.
+                var slots = VisibleSlots(zone);
 
                 if (columnsGrid.ColumnDefinitions.Count > 0)
                 {
@@ -142,22 +305,23 @@ namespace MarketClock
                     columnsGrid.Children.Add(splitter);
                 }
 
-                var column = new Controls.ColumnDefinition { MinWidth = 60 };
-                if (slots.Count == 0)
-                {
-                    column.Width = new GridLength(90); // an empty column, shown only as a drop target
-                }
-                else
-                {
-                    column.Width = new GridLength(zone.Weight, GridUnitType.Star);
-                    columnSizes.Add((column, weight => zone.Weight = weight, () => column.Width.Value));
-                }
+                var column = new Controls.ColumnDefinition { MinWidth = 60, Width = new GridLength(zone.Weight, GridUnitType.Star) };
+                columnSizes.Add((column, weight => zone.Weight = weight, () => column.Width.Value));
 
                 columnsGrid.ColumnDefinitions.Add(column);
 
+                // The column itself: its heading, then its panels.
+                var columnHost = new Controls.Grid();
+                columnHost.RowDefinitions.Add(new Controls.RowDefinition { Height = GridLength.Auto });
+                columnHost.RowDefinitions.Add(new Controls.RowDefinition());
+                columnHost.Children.Add(BuildColumnHeader(zone, index));
+
                 var container = BuildZone(zone, slots, arranging);
-                Controls.Grid.SetColumn(container, columnsGrid.ColumnDefinitions.Count - 1);
-                columnsGrid.Children.Add(container);
+                Controls.Grid.SetRow(container, 1);
+                columnHost.Children.Add(container);
+
+                Controls.Grid.SetColumn(columnHost, columnsGrid.ColumnDefinitions.Count - 1);
+                columnsGrid.Children.Add(columnHost);
             }
 
             // Columns on top, bottom strip underneath.
@@ -220,10 +384,11 @@ namespace MarketClock
 
             if (slots.Count == 0)
             {
-                // Only reached while arranging: outline the empty zone so it reads as a place to drop.
+                // An empty column, or (only while arranging) the empty bottom strip: outlined, so it
+                // reads as a place to drop a panel. The outline is brighter while a panel is being dragged.
                 container.Children.Add(new System.Windows.Shapes.Rectangle
                 {
-                    Stroke = new Media.SolidColorBrush(Media.Color.FromArgb(0x66, 0xFF, 0xFF, 0xFF)),
+                    Stroke = new Media.SolidColorBrush(Media.Color.FromArgb((byte)(arranging ? 0x66 : 0x2A), 0xFF, 0xFF, 0xFF)),
                     StrokeThickness = 1,
                     StrokeDashArray = new Media.DoubleCollection { 4, 4 },
                     RadiusX = 14,
@@ -231,7 +396,7 @@ namespace MarketClock
                 });
                 container.Children.Add(new Controls.TextBlock
                 {
-                    Text = "drop here",
+                    Text = arranging ? "drop here" : "empty",
                     FontSize = 10,
                     Foreground = new Media.SolidColorBrush(Media.Color.FromArgb(0x99, 0xFF, 0xFF, 0xFF)),
                     HorizontalAlignment = System.Windows.HorizontalAlignment.Center,

@@ -6,12 +6,15 @@
              mc:Ignorable="d"
              d:DesignHeight="200"
              d:DesignWidth="320">
-    <Grid>
+    <!-- Transparent, so a click anywhere in the panel counts: it moves on to the next clock. -->
+    <Grid Background="Transparent" MouseLeftButtonDown="Clock_MouseLeftButtonDown">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Viewbox Grid.Row="0">
+
+        <!-- Digital clock -->
+        <Viewbox x:Name="DigitalClock" Grid.Row="0">
             <TextBlock Text="{Binding CurrentTime}"
                     Padding="5"
                     Foreground="White"
@@ -21,6 +24,64 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"/>
         </Viewbox>
+
+        <!-- Analog clock: the date on the left, the clock face on the right -->
+        <Grid x:Name="AnalogClock" Grid.Row="0" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Date: day of the week, day of the month, month and year -->
+            <Viewbox Grid.Column="0" Margin="6">
+                <StackPanel>
+                    <TextBlock x:Name="AnalogDayText"
+                               TextAlignment="Center"
+                               FontFamily="{StaticResource JetBrainsMonoRegular}"
+                               FontSize="9"
+                               Foreground="#CCFFFFFF"/>
+                    <TextBlock x:Name="AnalogDayNumberText"
+                               TextAlignment="Center"
+                               FontFamily="{StaticResource JetBrainsMonoThin}"
+                               FontSize="34"
+                               Foreground="White"
+                               Margin="0,-4,0,-4"/>
+                    <TextBlock x:Name="AnalogMonthText"
+                               TextAlignment="Center"
+                               FontFamily="{StaticResource JetBrainsMonoRegular}"
+                               FontSize="9"
+                               Foreground="#CCFFFFFF"/>
+                </StackPanel>
+            </Viewbox>
+
+            <!-- Face, drawn on a 200 x 200 canvas. The code adds the marks and numbers to
+                 AnalogFace and turns the hands. -->
+            <Viewbox Grid.Column="1" Margin="4">
+                <Canvas Width="200" Height="200">
+                    <Ellipse Width="198" Height="198" Canvas.Left="1" Canvas.Top="1" Stroke="#55FFFFFF" StrokeThickness="1.5"/>
+                    <Canvas x:Name="AnalogFace" Width="200" Height="200"/>
+
+                    <!-- Hands: drawn pointing at 12 and turned about the centre -->
+                    <Line X1="100" Y1="110" X2="100" Y2="50" Stroke="White" StrokeThickness="5" StrokeStartLineCap="Round" StrokeEndLineCap="Round">
+                        <Line.RenderTransform>
+                            <RotateTransform x:Name="HourRotation" CenterX="100" CenterY="100"/>
+                        </Line.RenderTransform>
+                    </Line>
+                    <Line X1="100" Y1="112" X2="100" Y2="24" Stroke="White" StrokeThickness="3" StrokeStartLineCap="Round" StrokeEndLineCap="Round">
+                        <Line.RenderTransform>
+                            <RotateTransform x:Name="MinuteRotation" CenterX="100" CenterY="100"/>
+                        </Line.RenderTransform>
+                    </Line>
+                    <Line X1="100" Y1="120" X2="100" Y2="16" Stroke="Fuchsia" StrokeThickness="1.2">
+                        <Line.RenderTransform>
+                            <RotateTransform x:Name="SecondRotation" CenterX="100" CenterY="100"/>
+                        </Line.RenderTransform>
+                    </Line>
+                    <Ellipse Width="8" Height="8" Canvas.Left="96" Canvas.Top="96" Fill="Fuchsia"/>
+                </Canvas>
+            </Viewbox>
+        </Grid>
+
         <!-- Countdown timer: shown under the clock while a timer is running. -->
         <Viewbox Grid.Row="1"
                  MaxHeight="90"

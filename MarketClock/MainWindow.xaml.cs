@@ -61,6 +61,7 @@ namespace MarketClock
             InitializeDashboard();
             InitializeTrayIcon();
             LoadPanelLayout();
+            ClockView.LoadSettings();
             NotesView.LoadNotes();
             SongsView.LoadSongs();
             SongsView.RestoreQueue();

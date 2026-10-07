@@ -14,19 +14,25 @@ namespace MarketClock
     /// <summary>A column (or the bottom strip): its share of the space and the panels stacked in it, top to bottom.</summary>
     public sealed class DashboardZone
     {
+        /// <summary>The heading shown above a column (the bottom strip has none).</summary>
+        public string Name { get; set; } = "";
+
+        /// <summary>False while a column is switched off with its F-key. Its panels keep their places.</summary>
+        public bool Visible { get; set; } = true;
+
         public double Weight { get; set; } = 1;
 
         public List<DashboardSlot> Panels { get; set; } = new();
     }
 
     /// <summary>
-    /// Where every dashboard panel sits and how big it is. Saved to
+    /// Where every dashboard panel sits and how big it is, and each column's name and whether it is shown. Saved to
     /// %LocalAppData%\MarketClock\layout.json whenever the user rearranges or resizes.
     /// Sizes are shares ("weights"), not pixels, so the layout scales with the window.
     /// </summary>
     public sealed class DashboardLayout
     {
-        public const int ColumnCount = 4;
+        public const int ColumnCount = 8;
 
         private static readonly string FilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -52,19 +58,34 @@ namespace MarketClock
                 Panels = panels.Select(p => new DashboardSlot { Key = p.Key, Weight = p.Weight }).ToList(),
             };
 
-            return new DashboardLayout
+            var layout = new DashboardLayout
             {
                 MainWeight = 5,
                 Columns =
                 {
-                    Zone(1, ("Clock", 5), ("HourlyBell", 2.5), ("Countdown", 2.5), ("Jee", 1), ("Active", 1)),
+                    Zone(1, ("Clock", 5), ("HourlyBell", 2.5), ("Countdown", 2.5), ("Jee", 1)),
                     Zone(1, ("NetWorth", 1.2), ("NetWorthGraph", 2.5), ("Accounts", 2), ("Balance", 1), ("Recent", 2.2), ("Top", 2.2)),
                     Zone(1.3, ("Songs", 1), ("Equalizer", 1), ("DailyExpenses", 1), ("MonthSummary", 0.6)),
                     Zone(1, ("Todo", 1), ("Reminders", 1), ("Notes", 1)),
                 },
                 Bottom = Zone(1.3, ("Habits", 1)),
             };
+
+            // The remaining columns start empty and switched off; their F-key brings them up.
+            while (layout.Columns.Count < ColumnCount)
+            {
+                layout.Columns.Add(new DashboardZone { Visible = false });
+            }
+
+            for (var i = 0; i < layout.Columns.Count; i++)
+            {
+                layout.Columns[i].Name = DefaultColumnName(i);
+            }
+
+            return layout;
         }
+
+        public static string DefaultColumnName(int index) => $"Column {index + 1}";
 
         /// <summary>Loads the saved layout, repaired so that it holds exactly the panels in <paramref name="knownKeys"/>.</summary>
         public static DashboardLayout Load(IReadOnlyCollection<string> knownKeys)
@@ -111,9 +132,10 @@ namespace MarketClock
             Columns ??= new();
             Bottom ??= new();
 
+            // Columns the file does not have yet start empty and switched off.
             while (Columns.Count < ColumnCount)
             {
-                Columns.Add(new DashboardZone());
+                Columns.Add(new DashboardZone { Visible = false });
             }
 
             // Extra columns (from a file made with more columns) fold into the last one.
@@ -124,6 +146,14 @@ namespace MarketClock
             }
 
             MainWeight = SaneWeight(MainWeight, 5);
+
+            for (var i = 0; i < Columns.Count; i++)
+            {
+                if (Columns[i] != null && string.IsNullOrWhiteSpace(Columns[i].Name))
+                {
+                    Columns[i].Name = DefaultColumnName(i);
+                }
+            }
 
             var seen = new HashSet<string>();
 

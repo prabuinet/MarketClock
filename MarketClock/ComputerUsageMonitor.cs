@@ -35,19 +35,6 @@ namespace MarketClock
             reminded = false;
         }
 
-        public static TimeSpan GetActiveDuration()
-        {
-            var idle = DateTime.Now - lastMovedTime;
-            if (idle > idleThreshold)
-            {
-                return TimeSpan.Zero;
-            }
-            else
-            {
-                return DateTime.Now - sessionStartTime;
-            }
-        }
-
         private static void MonitorLoop()
         {
             while (_running)

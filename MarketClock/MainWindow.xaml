@@ -37,7 +37,6 @@
                 <MenuItem Header="Hourly Bell"   Tag="HourlyBell" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Countdown Timer" Tag="Countdown" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="JEE Countdown" Tag="Jee"     IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Active Time"   Tag="Active"  IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Actions"       Tag="Balance" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Net Worth"     Tag="NetWorth" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Net Worth Graph" Tag="NetWorthGraph" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
@@ -103,7 +102,7 @@
                  The content of each one is its own UserControl (see the Panels folder). -->
             <Grid x:Name="PanelParking" Visibility="Collapsed">
                 <Border x:Name="ClockPanel" Style="{StaticResource PanelCard}">
-                    <panels:ClockControl/>
+                    <panels:ClockControl x:Name="ClockView"/>
                 </Border>
 
                 <!-- Counts down to the next full hour and rings a bell there (hours set in Settings > Hourly Bell). -->
@@ -117,10 +116,6 @@
 
                 <Border x:Name="JeePanel" Style="{StaticResource PanelCard}">
                     <panels:JeeControl/>
-                </Border>
-
-                <Border x:Name="ActivePanel" Style="{StaticResource PanelCard}" Margin="8">
-                    <panels:ActiveTimeControl/>
                 </Border>
 
                 <Border x:Name="NetWorthPanel" Style="{StaticResource PanelCard}">

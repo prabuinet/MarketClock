@@ -20,6 +20,9 @@ namespace MarketClock
         /// <summary>Which equalizer look is selected (index into EqualizerShaders.Styles).</summary>
         public int EqualizerStyle { get; set; }
 
+        /// <summary>Which look the Clock panel shows: 0 digital, 1 analog.</summary>
+        public int ClockStyle { get; set; }
+
         /// <summary>First hour of the day the hourly bell rings at, as 24-hour "HH:mm".</summary>
         public string HourlyBellStart { get; set; } = "07:00";
 
