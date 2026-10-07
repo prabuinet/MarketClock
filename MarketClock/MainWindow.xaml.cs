@@ -13,9 +13,6 @@ namespace MarketClock
     /// </summary>
     public partial class MainWindow : Window
     {
-        private System.Windows.Point? _lastMousePosition = null;
-        private const double MouseMoveThreshold = 10.0; // pixels
-
         private readonly string stateFilePath;
         private AccountsWindow? accountsWindow;
         private SettingsWindow? settingsWindow;
@@ -33,27 +30,9 @@ namespace MarketClock
         [DllImport("user32.dll")]
         public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 
-        private const int SWP_NOSIZE = 0x0001;
-        private const int SWP_NOMOVE = 0x0002;
-        private const int SWP_NOACTIVATE = 0x0010;
-        private static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        private static extern bool SetWindowPos(
-            IntPtr hWnd,
-            IntPtr hWndInsertAfter,
-            int X,
-            int Y,
-            int cx,
-            int cy,
-            uint uFlags);
-
-        public bool ScreenSaverMode { get; set; } = false;
-
         public MainWindow()
         {
             InitializeComponent();
-            this.Topmost = true;
 
             stateFilePath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -82,11 +61,22 @@ namespace MarketClock
             InitializeDashboard();
             InitializeTrayIcon();
             LoadPanelLayout();
-            LoadPlaceholderData();
-            LoadNotes();
-            LoadSongs();
-            LoadEqualizerStyle();
-            this.Closing += (_, _) => SaveNotes();
+            NotesView.LoadNotes();
+            SongsView.LoadSongs();
+            SongsView.RestoreQueue();
+            EqualizerView.Attach(SongsView);
+            EqualizerView.LoadStyle();
+            DailyExpensesView.LoadSettings();
+            MonthSummaryView.LoadSettings();
+            CountdownView.LoadSettings();
+            HourlyBellView.Start();
+            this.Closing += (_, _) =>
+            {
+                NotesView.SaveNotes();
+                SongsView.StopSongs();
+                HourlyBellView.Stop();
+                CountdownView.Stop();
+            };
             Loaded += (_, _) => RefreshDashboard();
         }
 
@@ -111,15 +101,6 @@ namespace MarketClock
             File.WriteAllLines(stateFilePath, lines);
         }
 
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-            var hwnd = new WindowInteropHelper(this).Handle;
-            // Set window as topmost in Z-order
-            SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
-                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE);
-        }
-
         private void ResizeGrip_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var grip = sender as FrameworkElement;
@@ -142,11 +123,6 @@ namespace MarketClock
     
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(ScreenSaverMode)
-            {
-                Environment.Exit(0);
-            }
-
             if (e.ButtonState == MouseButtonState.Pressed)
             {
                 this.DragMove();
@@ -176,8 +152,17 @@ namespace MarketClock
                 return;
             }
 
-            // Quick repeated clicks on the song list or the equalizer are clicks, not a resize request.
-            if (SongsPanel.IsMouseOver || EqualizerPanel.IsMouseOver)
+            // Double-clicking the Hourly Bell panel rings the bell (handy for checking how it sounds).
+            if (HourlyBellPanel.IsMouseOver)
+            {
+                HourlyBellView.Ring();
+                return;
+            }
+
+            // Quick repeated clicks on the song list, the equalizer or a panel's mode buttons
+            // are clicks, not a resize request.
+            if (SongsPanel.IsMouseOver || EqualizerPanel.IsMouseOver || DailyExpensesPanel.IsMouseOver
+                || MonthSummaryPanel.IsMouseOver || CountdownPanel.IsMouseOver)
             {
                 return;
             }
@@ -192,37 +177,6 @@ namespace MarketClock
             }
         }
 
-        private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (ScreenSaverMode)
-            {
-                Environment.Exit(0);
-            }
-        }
-
-        private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            if (!ScreenSaverMode)
-                return;
-
-            var currentPosition = e.GetPosition(this);
-
-            if (_lastMousePosition == null)
-            {
-                _lastMousePosition = currentPosition;
-                return;
-            }
-
-            double dx = currentPosition.X - _lastMousePosition.Value.X;
-            double dy = currentPosition.Y - _lastMousePosition.Value.Y;
-            double distance = Math.Sqrt(dx * dx + dy * dy);
-
-            if (distance >= MouseMoveThreshold)
-            {
-                Environment.Exit(0);
-            }
-        }
-
         private void TestMenu_Click(object sender, RoutedEventArgs e)
         {
             
@@ -230,10 +184,7 @@ namespace MarketClock
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if(this.ScreenSaverMode == false)
-            {
-                ComputerUsageMonitor.Start();
-            }
+            ComputerUsageMonitor.Start();
         }
 
         private void ResetSessionMenu_OnClick(object sender, RoutedEventArgs e)
@@ -297,6 +248,30 @@ namespace MarketClock
             settingsWindow.Activate();
         }
 
+        /// <summary>Shows the songs folder again (called by Settings after it is changed).</summary>
+        internal void LoadSongs() => SongsView.LoadSongs();
+
+        /// <summary>Reads the bell hours again (called by Settings after they are changed).</summary>
+        public void LoadHourlyBellSettings() => HourlyBellView.LoadSettings();
+
+        /// <summary>True when <paramref name="source"/> is a text box or something inside one.</summary>
+        private static bool IsInsideTextBox(DependencyObject? source)
+        {
+            while (source != null)
+            {
+                if (source is System.Windows.Controls.Primitives.TextBoxBase)
+                {
+                    return true;
+                }
+
+                source = source is System.Windows.Media.Visual
+                    ? System.Windows.Media.VisualTreeHelper.GetParent(source)
+                    : LogicalTreeHelper.GetParent(source);
+            }
+
+            return false;
+        }
+
         private void AddExpense_Click(object sender, RoutedEventArgs e)
         {
             var expenseWindow = new ExpenseWindow
@@ -304,6 +279,36 @@ namespace MarketClock
                 Owner = this
             };
             expenseWindow.ShowDialog();
+            RefreshDashboard();
+        }
+
+        private void AddIncome_Click(object sender, RoutedEventArgs e)
+        {
+            var incomeWindow = new ExpenseWindow(income: true)
+            {
+                Owner = this
+            };
+            incomeWindow.ShowDialog();
+            RefreshDashboard();
+        }
+
+        private void Transfer_Click(object sender, RoutedEventArgs e)
+        {
+            var transferWindow = new TransferWindow
+            {
+                Owner = this
+            };
+            transferWindow.ShowDialog();
+            RefreshDashboard();
+        }
+
+        private void DailyMtm_Click(object sender, RoutedEventArgs e)
+        {
+            var dailyMtmWindow = new DailyMtmWindow
+            {
+                Owner = this
+            };
+            dailyMtmWindow.ShowDialog();
             RefreshDashboard();
         }
 

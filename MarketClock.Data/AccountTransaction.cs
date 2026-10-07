@@ -19,6 +19,12 @@ namespace MarketClock.Data
 
         public ExpenseCategory? ExpenseCategory { get; set; }
 
+        /// <summary>True for the day's profit or loss entered through the Daily MTM form (one per account per day).</summary>
+        public bool IsDailyMtm { get; set; }
+
+        /// <summary>True for either side of a transfer between two accounts: not an expense and not an income.</summary>
+        public bool IsTransfer { get; set; }
+
         /// <summary>Account balance after this transaction was applied.</summary>
         public decimal Balance { get; set; }
     }

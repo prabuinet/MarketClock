@@ -10,7 +10,12 @@ namespace MarketClock
         {
             InitializeComponent();
 
-            SongsFolderTextBox.Text = AppSettings.Load().SongsFolder;
+            var settings = AppSettings.Load();
+            SongsFolderTextBox.Text = settings.SongsFolder;
+            HourlyBellStartTextBox.Text = AppSettings.FormatTimeOfDay(
+                AppSettings.ParseTimeOfDay(settings.HourlyBellStart) ?? TimeSpan.FromHours(7));
+            HourlyBellEndTextBox.Text = AppSettings.FormatTimeOfDay(
+                AppSettings.ParseTimeOfDay(settings.HourlyBellEnd) ?? TimeSpan.FromHours(23));
 
             SettingsTree.SelectedItemChanged += SettingsTree_SelectedItemChanged;
             AccountCategoriesItem.IsSelected = true;
@@ -52,6 +57,7 @@ namespace MarketClock
             ExpenseCategoriesPage.Visibility = ToVisibility(page == "ExpenseCategories");
             MediaPage.Visibility = ToVisibility(page == "Media");
             SongsPage.Visibility = ToVisibility(page == "Songs");
+            HourlyBellPage.Visibility = ToVisibility(page == "HourlyBell");
         }
 
         private void BrowseSongsFolder_Click(object sender, RoutedEventArgs e)
@@ -101,6 +107,40 @@ namespace MarketClock
 
             // Show the new folder on the dashboard straight away.
             (Owner as MainWindow)?.LoadSongs();
+        }
+
+        private void SaveHourlyBell_Click(object sender, RoutedEventArgs e)
+        {
+            var start = AppSettings.ParseTimeOfDay(HourlyBellStartTextBox.Text.Trim());
+            var end = AppSettings.ParseTimeOfDay(HourlyBellEndTextBox.Text.Trim());
+
+            if (start == null || end == null)
+            {
+                HourlyBellMessage.Text = "Enter both times like 7:00 AM or 23:00.";
+                return;
+            }
+
+            try
+            {
+                // Load first, so saving this page does not reset any other setting.
+                var settings = AppSettings.Load();
+                settings.HourlyBellStart = start.Value.ToString(@"hh\:mm");
+                settings.HourlyBellEnd = end.Value.ToString(@"hh\:mm");
+                settings.Save();
+            }
+            catch (Exception ex)
+            {
+                HourlyBellMessage.Text = $"Could not save: {ex.Message}";
+                return;
+            }
+
+            // Show the times back the way they were understood.
+            HourlyBellStartTextBox.Text = AppSettings.FormatTimeOfDay(start.Value);
+            HourlyBellEndTextBox.Text = AppSettings.FormatTimeOfDay(end.Value);
+            HourlyBellMessage.Text = "Saved.";
+
+            // Use the new hours on the dashboard straight away.
+            (Owner as MainWindow)?.LoadHourlyBellSettings();
         }
 
         private static Visibility ToVisibility(bool visible) => visible ? Visibility.Visible : Visibility.Collapsed;

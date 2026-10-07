@@ -40,7 +40,7 @@
     </Window.Resources>
 
     <StackPanel Margin="18">
-        <TextBlock Text="Add Expense" FontSize="20"/>
+        <TextBlock x:Name="HeadingText" Text="Add Expense" FontSize="20"/>
 
         <TextBlock Text="Account" Style="{StaticResource FieldLabel}"/>
         <ComboBox x:Name="AccountComboBox"
@@ -48,7 +48,7 @@
                   FontFamily="{StaticResource JetBrainsMonoRegular}"
                   Padding="8,6"/>
 
-        <TextBlock Text="Category" Style="{StaticResource FieldLabel}"/>
+        <TextBlock x:Name="CategoryLabel" Text="Category" Style="{StaticResource FieldLabel}"/>
         <ComboBox x:Name="CategoryComboBox"
                   DisplayMemberPath="Name"
                   FontFamily="{StaticResource JetBrainsMonoRegular}"

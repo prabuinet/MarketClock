@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="MarketClock.Panels.TodoControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="200"
+             d:DesignWidth="320">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Style="{StaticResource PanelHeader}">
+            <Run Text="To-Do List"/>
+            <Run Text="(sample data)" Foreground="#80FFFFFF" FontSize="10"/>
+        </TextBlock>
+        <Grid Grid.Row="1" Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="48"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Task" Style="{StaticResource PanelEmptyText}" FontSize="10"/>
+            <TextBlock Grid.Column="1" Text="Done" Style="{StaticResource PanelEmptyText}" FontSize="10" HorizontalAlignment="Right"/>
+        </Grid>
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="TodoList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="48"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" Margin="{Binding Indent}">
+                                <TextBlock Text="{Binding Glyph}"
+                                           Style="{StaticResource PanelText}"
+                                           Foreground="#B8FFFFFF"
+                                           Width="16"/>
+                                <TextBlock x:Name="TitleText"
+                                           Text="{Binding Title}"
+                                           Style="{StaticResource PanelText}"
+                                           Foreground="#CCFFFFFF"/>
+                            </StackPanel>
+                            <TextBlock x:Name="PercentText"
+                                       Grid.Column="1"
+                                       Text="{Binding Percent}"
+                                       Style="{StaticResource PanelText}"
+                                       Foreground="#B8FFFFFF"
+                                       HorizontalAlignment="Right"/>
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsGroup}" Value="True">
+                                <Setter TargetName="TitleText" Property="Foreground" Value="White"/>
+                                <Setter TargetName="PercentText" Property="Foreground" Value="LightCyan"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

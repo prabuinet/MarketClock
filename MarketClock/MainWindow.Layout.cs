@@ -34,6 +34,8 @@ namespace MarketClock
         private void InitializeDashboard()
         {
             dashboardPanels["Clock"] = ClockPanel;
+            dashboardPanels["HourlyBell"] = HourlyBellPanel;
+            dashboardPanels["Countdown"] = CountdownPanel;
             dashboardPanels["Jee"] = JeePanel;
             dashboardPanels["Active"] = ActivePanel;
             dashboardPanels["NetWorth"] = NetWorthPanel;
@@ -42,6 +44,8 @@ namespace MarketClock
             dashboardPanels["Balance"] = BalancePanel;
             dashboardPanels["Recent"] = RecentPanel;
             dashboardPanels["Top"] = TopPanel;
+            dashboardPanels["DailyExpenses"] = DailyExpensesPanel;
+            dashboardPanels["MonthSummary"] = MonthSummaryPanel;
             dashboardPanels["Songs"] = SongsPanel;
             dashboardPanels["Equalizer"] = EqualizerPanel;
             dashboardPanels["Todo"] = TodoPanel;

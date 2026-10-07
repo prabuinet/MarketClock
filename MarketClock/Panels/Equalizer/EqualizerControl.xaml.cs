@@ -1,13 +1,13 @@
 using System.Windows;
 
-namespace MarketClock
+namespace MarketClock.Panels
 {
     // Equalizer panel: follows the song being played, in the style of Winamp's spectrum
     // display - levels jump up with the music, fall back smoothly, and leave a "peak"
     // marker that drops more slowly. It is drawn by a GPU shader (see EqualizerShaders.cs)
     // in one of several looks; clicking the panel moves to the next look. If shaders are
     // not available it falls back to plain bars drawn on a canvas.
-    public partial class MainWindow
+    public partial class EqualizerControl : System.Windows.Controls.UserControl
     {
         private const int EqualizerBarCount = EqualizerShaders.BandCount;
         private const double EqualizerLowestHz = 40;
@@ -32,8 +32,22 @@ namespace MarketClock
         private SpectrumShaderEffect? equalizerEffect; // null while using the plain-bars fallback
         private int equalizerStyle;
 
+        private SongsControl? songs; // where the music comes from
+
+        public EqualizerControl()
+        {
+            InitializeComponent();
+        }
+
+        /// <summary>Makes the display follow the music played by <paramref name="songsControl"/>.</summary>
+        internal void Attach(SongsControl songsControl)
+        {
+            songs = songsControl;
+            songs.PlaybackStarted += StartEqualizer;
+        }
+
         /// <summary>Restores the look that was last chosen.</summary>
-        private void LoadEqualizerStyle()
+        internal void LoadStyle()
         {
             ApplyEqualizerStyle(AppSettings.Load().EqualizerStyle);
         }
@@ -200,8 +214,10 @@ namespace MarketClock
 
         private void EqualizerTick()
         {
-            var spectrum = songIsPlaying ? songTap?.LatestSpectrum : null;
-            var sampleRate = songTap?.SampleRate ?? 44100;
+            var tap = songs?.SpectrumTap;
+            var playing = songs?.IsPlaying == true;
+            var spectrum = playing ? tap?.LatestSpectrum : null;
+            var sampleRate = tap?.SampleRate ?? 44100;
             var anythingShowing = false;
 
             for (var i = 0; i < EqualizerBarCount; i++)
@@ -224,7 +240,7 @@ namespace MarketClock
                 DrawEqualizer();
             }
 
-            if (!songIsPlaying && !anythingShowing)
+            if (!playing && !anythingShowing)
             {
                 equalizerTimer?.Stop();
             }

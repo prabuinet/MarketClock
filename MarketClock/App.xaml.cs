@@ -14,40 +14,9 @@ namespace MarketClock
             base.OnStartup(e);
             RegisterTextBoxSelectAllOnFocus();
 
-            string[] args = Environment.GetCommandLineArgs();
-            if (args.Length > 1)
-            {
-                switch (args[1].ToLower())
-                {
-                    case "/c":
-                        // Open config window
-                        System.Windows.MessageBox.Show("No configuration yet.", "My Screensaver");
-                        Shutdown();
-                        return;
-
-                    case "/p":
-                        // Preview inside Control Panel (not trivial in WPF, can ignore or stub)
-                        Shutdown();
-                        return;
-
-                    case "/s":
-                        // Fullscreen mode
-                        var win = new MainWindow();
-                        win.WindowState = WindowState.Maximized;
-                        win.WindowStyle = WindowStyle.None;
-                        win.Topmost = true;
-                        win.ScreenSaverMode = true;
-                        win.Show();
-                        return;
-                }
-            }
-
-            // Default to screensaver mode
-            var defaultWin = new MainWindow();
-            // defaultWin.WindowState = WindowState.Maximized;
-            defaultWin.WindowStyle = WindowStyle.None;
-            defaultWin.Topmost = true;
-            defaultWin.Show();
+            var window = new MainWindow();
+            window.WindowStyle = WindowStyle.None;
+            window.Show();
         }
 
         /// <summary>Makes every TextBox in the app select all of its text when it gets focus.</summary>

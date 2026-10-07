@@ -1,0 +1,128 @@
+<Window x:Class="MarketClock.DailyMtmWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Daily MTM"
+        Width="520"
+        SizeToContent="Height"
+        MaxHeight="760"
+        Background="#101010"
+        Foreground="White"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <Window.Resources>
+        <FontFamily x:Key="JetBrainsMonoRegular">pack://application:,,,/fonts/#JetBrains Mono Regular</FontFamily>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+        <Style x:Key="FieldLabel" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+            <Setter Property="Foreground" Value="#B8FFFFFF"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
+            <Setter Property="Background" Value="#181818"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#44FFFFFF"/>
+            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
+            <Setter Property="Background" Value="#18FFFFFF"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#44FFFFFF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Daily MTM" FontSize="20"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,12,0,0">
+            <TextBlock Text="Date" Style="{StaticResource FieldLabel}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <DatePicker x:Name="MtmDatePicker"
+                        Width="160"
+                        FontFamily="{StaticResource JetBrainsMonoRegular}"/>
+        </StackPanel>
+
+        <!-- Column headings; the widths match the row template below. -->
+        <Grid Grid.Row="2" Margin="0,16,0,6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="130"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Trading account" Style="{StaticResource FieldLabel}"/>
+            <TextBlock Grid.Column="1" Text="Balance" Style="{StaticResource FieldLabel}" TextAlignment="Right" Margin="0,0,14,0"/>
+            <TextBlock Grid.Column="2" Text="MTM for the day" Style="{StaticResource FieldLabel}"/>
+        </Grid>
+
+        <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="RowsList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="150"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding AccountName}"
+                                       FontSize="13"
+                                       VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding BalanceText}"
+                                       Foreground="#B8FFFFFF"
+                                       FontSize="12"
+                                       TextAlignment="Right"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,14,0"/>
+                            <TextBox Grid.Column="2"
+                                     Text="{Binding MtmText, Mode=OneTime}"
+                                     TextAlignment="Right"
+                                     TextChanged="Mtm_TextChanged"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Grid Grid.Row="4" Margin="0,6,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="150"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Total for the day" Style="{StaticResource FieldLabel}" TextAlignment="Right" Margin="0,0,14,0"/>
+            <TextBlock x:Name="TotalText" Grid.Column="1" FontSize="13" TextAlignment="Right" Margin="0,0,9,0"/>
+        </Grid>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,16,0,0">
+            <Button x:Name="SaveButton" Content="Save" Click="Save_Click" IsDefault="True" IsEnabled="False" Margin="0,0,8,0"/>
+            <Button Content="Close" IsCancel="True"/>
+        </StackPanel>
+
+        <TextBlock x:Name="MessageTextBlock"
+                   Grid.Row="6"
+                   Text="Loading accounts..."
+                   Foreground="Fuchsia"
+                   FontSize="12"
+                   TextWrapping="Wrap"
+                   Margin="0,8,0,0"/>
+    </Grid>
+</Window>

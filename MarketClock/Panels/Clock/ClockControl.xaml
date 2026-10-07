@@ -1,0 +1,42 @@
+﻿<UserControl x:Class="MarketClock.Panels.ClockControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="200"
+             d:DesignWidth="320">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Viewbox Grid.Row="0">
+            <TextBlock Text="{Binding CurrentTime}"
+                    Padding="5"
+                    Foreground="White"
+                    FontFamily="{StaticResource JetBrainsMonoThin}"
+                    FontSize="14"
+                    TextAlignment="Center"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"/>
+        </Viewbox>
+        <!-- Countdown timer: shown under the clock while a timer is running. -->
+        <Viewbox Grid.Row="1"
+                 MaxHeight="90"
+                 HorizontalAlignment="Center"
+                 VerticalAlignment="Center"
+                 Visibility="{Binding TimerVisibility}">
+            <TextBlock
+                Text="{Binding TimerCountDown}"
+                Padding="5"
+                Foreground="Fuchsia"
+                FontFamily="{StaticResource JetBrainsMonoThin}"
+                FontSize="14"
+                TextAlignment="Center"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+            />
+        </Viewbox>
+    </Grid>
+</UserControl>

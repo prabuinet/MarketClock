@@ -10,14 +10,8 @@ namespace MarketClock
 
         private void InitializeTrayIcon()
         {
-            // Created once the window is up; a screensaver run does not get an icon.
-            Loaded += (_, _) =>
-            {
-                if (!ScreenSaverMode)
-                {
-                    CreateTrayIcon();
-                }
-            };
+            // Created once the window is up.
+            Loaded += (_, _) => CreateTrayIcon();
 
             Closed += (_, _) => RemoveTrayIcon();
         }
@@ -49,18 +43,18 @@ namespace MarketClock
             var menu = new System.Windows.Forms.ContextMenuStrip();
             menu.Items.Add("Open", null, (_, _) => RestoreFromTray());
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
-            var play = menu.Items.Add("Play", null, (_, _) => PlaySongs());
-            var pause = menu.Items.Add("Pause", null, (_, _) => PauseSongs());
-            var stop = menu.Items.Add("Stop", null, (_, _) => StopSongs());
+            var play = menu.Items.Add("Play", null, (_, _) => SongsView.PlaySongs());
+            var pause = menu.Items.Add("Pause", null, (_, _) => SongsView.PauseSongs());
+            var stop = menu.Items.Add("Stop", null, (_, _) => SongsView.StopSongs());
             menu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
             menu.Items.Add("Exit", null, (_, _) => Close());
 
             // Only offer what makes sense right now.
             menu.Opening += (_, _) =>
             {
-                play.Enabled = !songIsPlaying;
-                pause.Enabled = songIsPlaying;
-                stop.Enabled = songOutput != null;
+                play.Enabled = !SongsView.IsPlaying;
+                pause.Enabled = SongsView.IsPlaying;
+                stop.Enabled = SongsView.HasSong;
             };
 
             trayIcon = new System.Windows.Forms.NotifyIcon

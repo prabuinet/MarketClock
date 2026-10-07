@@ -57,9 +57,9 @@ namespace MarketClock
                 MainWeight = 5,
                 Columns =
                 {
-                    Zone(1, ("Clock", 5), ("Jee", 1), ("Active", 1)),
+                    Zone(1, ("Clock", 5), ("HourlyBell", 2.5), ("Countdown", 2.5), ("Jee", 1), ("Active", 1)),
                     Zone(1, ("NetWorth", 1.2), ("NetWorthGraph", 2.5), ("Accounts", 2), ("Balance", 1), ("Recent", 2.2), ("Top", 2.2)),
-                    Zone(1.3, ("Songs", 1), ("Equalizer", 1)),
+                    Zone(1.3, ("Songs", 1), ("Equalizer", 1), ("DailyExpenses", 1), ("MonthSummary", 0.6)),
                     Zone(1, ("Todo", 1), ("Reminders", 1), ("Notes", 1)),
                 },
                 Bottom = Zone(1.3, ("Habits", 1)),

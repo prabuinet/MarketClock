@@ -1,10 +1,12 @@
 using System.IO;
 using System.Windows;
 
-namespace MarketClock
+namespace MarketClock.Panels
 {
-    // Notes panel: free text that is saved to a file and restored on the next start.
-    public partial class MainWindow
+    // Notes & Calculator panel: free text that is saved to a file and restored on the next start.
+    // A line that starts with ">" is a calculation; its answer goes on the line below as "= ..."
+    // (see NotesControl.Calculator.cs).
+    public partial class NotesControl : System.Windows.Controls.UserControl
     {
         private readonly string notesFilePath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -15,7 +17,12 @@ namespace MarketClock
         private bool notesLoaded;
         private bool notesDirty;
 
-        private void LoadNotes()
+        public NotesControl()
+        {
+            InitializeComponent();
+        }
+
+        public void LoadNotes()
         {
             try
             {
@@ -59,10 +66,11 @@ namespace MarketClock
 
         private void NotesTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
+            RefreshNoteCalculations();
             SaveNotes();
         }
 
-        private void SaveNotes()
+        public void SaveNotes()
         {
             notesSaveTimer?.Stop();
 
@@ -82,24 +90,6 @@ namespace MarketClock
             {
                 NotesStatusText.Text = "could not save notes";
             }
-        }
-
-        /// <summary>True when <paramref name="source"/> is a text box or something inside one.</summary>
-        private static bool IsInsideTextBox(DependencyObject? source)
-        {
-            while (source != null)
-            {
-                if (source is System.Windows.Controls.Primitives.TextBoxBase)
-                {
-                    return true;
-                }
-
-                source = source is System.Windows.Media.Visual
-                    ? System.Windows.Media.VisualTreeHelper.GetParent(source)
-                    : LogicalTreeHelper.GetParent(source);
-            }
-
-            return false;
         }
     }
 }

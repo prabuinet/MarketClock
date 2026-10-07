@@ -1,17 +1,29 @@
 using System.Windows;
 using MarketClock.Data;
 
-namespace MarketClock
+namespace MarketClock.Panels
 {
     // Net worth graph panel: one point per day, for the range picked in the dropdown.
-    public partial class MainWindow
+    public partial class NetWorthGraphControl : System.Windows.Controls.UserControl
     {
-        private List<Account> dashboardAccounts = new();
+        private IReadOnlyList<Account> accounts = Array.Empty<Account>();
         private List<(DateTime Date, decimal Value)> netWorthSeries = new();
+
+        public NetWorthGraphControl()
+        {
+            InitializeComponent();
+        }
+
+        /// <summary>Draws the graph for these accounts.</summary>
+        public void ShowAccounts(IReadOnlyList<Account> accounts)
+        {
+            this.accounts = accounts;
+            UpdateNetWorthGraph();
+        }
 
         private void NetWorthRange_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            // Also raised while the window is still being built; the first draw happens after loading.
+            // Also raised while the panel is still being built; the first draw happens after loading.
             if (IsLoaded)
             {
                 UpdateNetWorthGraph();
@@ -29,7 +41,7 @@ namespace MarketClock
             var today = DateTime.Today;
 
             // Net worth on a day is every amount recorded up to that day, opening balances included.
-            var transactions = dashboardAccounts
+            var transactions = accounts
                 .SelectMany(account => account.Transactions)
                 .Where(t => t.Date.Date <= today)
                 .OrderBy(t => t.Date)

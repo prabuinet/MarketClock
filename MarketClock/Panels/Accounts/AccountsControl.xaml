@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="MarketClock.Panels.AccountsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="200"
+             d:DesignWidth="320">
+    <StackPanel>
+        <TextBlock Text="Accounts" Style="{StaticResource PanelHeader}"/>
+        <TextBlock x:Name="AccountsEmptyText" Text="Loading..." Style="{StaticResource PanelEmptyText}"/>
+        <ScrollViewer MaxHeight="130" VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="DashboardAccountsList">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Name}"
+                                       Style="{StaticResource PanelText}"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding Balance, StringFormat={}{0:N2}}"
+                                       Style="{StaticResource PanelText}"
+                                       Foreground="LightCyan"
+                                       Margin="10,0,0,0"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </StackPanel>
+</UserControl>

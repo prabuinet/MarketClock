@@ -4,16 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MarketClock"
+        xmlns:panels="clr-namespace:MarketClock.Panels"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Background="Transparent" Opacity="0.95"        
         Foreground="White"
         MouseLeftButtonDown="Window_MouseLeftButtonDown"
         MouseDoubleClick="Window_MouseDoubleClick"
-        KeyUp="Window_KeyUp"
-        MouseMove="Window_MouseMove"
         Loaded="Window_Loaded"
-        Title="Clock" Height="450" Width="800" ShowInTaskbar="False" Topmost="True" WindowStyle="None" AllowsTransparency="True">
+        Title="Clock" Height="450" Width="800" ShowInTaskbar="False" WindowStyle="None" AllowsTransparency="True">
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Closed">
             <i:InvokeCommandAction Command="{Binding ExitCommand}" />            
@@ -35,6 +34,8 @@
             </MenuItem>
             <MenuItem x:Name="PanelsMenu" Header="Panels">
                 <MenuItem Header="Clock"         Tag="Clock"   IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
+                <MenuItem Header="Hourly Bell"   Tag="HourlyBell" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
+                <MenuItem Header="Countdown Timer" Tag="Countdown" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="JEE Countdown" Tag="Jee"     IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Active Time"   Tag="Active"  IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Actions"       Tag="Balance" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
@@ -43,11 +44,13 @@
                 <MenuItem Header="Accounts"      Tag="Accounts" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Recent Transactions" Tag="Recent" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Top Transactions This Month" Tag="Top" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
+                <MenuItem Header="Daily Expenses" Tag="DailyExpenses" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
+                <MenuItem Header="Income &amp; Expense This Month" Tag="MonthSummary" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Songs" Tag="Songs" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Equalizer" Tag="Equalizer" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="To-Do List" Tag="Todo" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Reminders" Tag="Reminders" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
-                <MenuItem Header="Notes" Tag="Notes" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
+                <MenuItem Header="Notes &amp; Calculator" Tag="Notes" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
                 <MenuItem Header="Habit Tracker" Tag="Habits" IsCheckable="True" IsChecked="True" StaysOpenOnClick="True" Click="PanelMenu_Click" />
             </MenuItem>
             <MenuItem x:Name="AccountsMenu" Header="Accounts" Click="AccountsMenu_Click" />
@@ -61,199 +64,6 @@
             <MenuItem x:Name="ExitMenu" Header="Exit" Command="{Binding ExitCommand}" Click="ExitMenu_Click" />
         </ContextMenu>
     </Window.ContextMenu>
-    <Window.Resources>
-        <FontFamily x:Key="Digital7Font">pack://application:,,,/fonts/#digital-7 (mono)</FontFamily>
-        <FontFamily x:Key="JetBrainsMonoNLThin">pack://application:,,,/fonts/#JetBrainsMonoNL-Thin</FontFamily>
-        <FontFamily x:Key="JetBrainsMonoThin">pack://application:,,,/fonts/#JetBrains Mono Thin</FontFamily>
-        <FontFamily x:Key="JetBrainsMonoRegular">pack://application:,,,/fonts/#JetBrains Mono Regular</FontFamily>
-        <Style x:Key="PanelCard" TargetType="Border">
-            <Setter Property="Background" Value="#12FFFFFF"/>
-            <Setter Property="BorderBrush" Value="#33FFFFFF"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="14"/>
-            <Setter Property="Padding" Value="12"/>
-        </Style>
-        <Style x:Key="PanelHeader" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
-            <Setter Property="Foreground" Value="#CCFFFFFF"/>
-            <Setter Property="FontSize" Value="13"/>
-            <Setter Property="Margin" Value="0,0,0,8"/>
-        </Style>
-        <Style x:Key="PanelText" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="12"/>
-        </Style>
-        <Style x:Key="PanelEmptyText" TargetType="TextBlock" BasedOn="{StaticResource PanelText}">
-            <Setter Property="Foreground" Value="#80FFFFFF"/>
-            <Setter Property="TextWrapping" Value="Wrap"/>
-        </Style>
-        <!-- Dark dropdown for use on the dashboard. -->
-        <Style x:Key="PanelComboBox" TargetType="ComboBox">
-            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ComboBox">
-                        <Grid>
-                            <ToggleButton Focusable="False"
-                                          ClickMode="Press"
-                                          IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
-                                <ToggleButton.Template>
-                                    <ControlTemplate TargetType="ToggleButton">
-                                        <Border Background="#18FFFFFF"
-                                                BorderBrush="#44FFFFFF"
-                                                BorderThickness="1"
-                                                CornerRadius="4"/>
-                                    </ControlTemplate>
-                                </ToggleButton.Template>
-                            </ToggleButton>
-                            <ContentPresenter IsHitTestVisible="False"
-                                              Margin="8,4,24,4"
-                                              VerticalAlignment="Center"
-                                              Content="{TemplateBinding SelectionBoxItem}"
-                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"/>
-                            <Path IsHitTestVisible="False"
-                                  HorizontalAlignment="Right"
-                                  VerticalAlignment="Center"
-                                  Margin="0,0,8,0"
-                                  Data="M 0 0 L 4 4 L 8 0"
-                                  Stroke="#CCFFFFFF"
-                                  StrokeThickness="1.5"/>
-                            <Popup x:Name="PART_Popup"
-                                   Placement="Bottom"
-                                   AllowsTransparency="True"
-                                   Focusable="False"
-                                   IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
-                                <Border Background="#1C1C1C"
-                                        BorderBrush="#44FFFFFF"
-                                        BorderThickness="1"
-                                        CornerRadius="4"
-                                        Margin="0,2,0,0"
-                                        MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}">
-                                    <ScrollViewer MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                                  VerticalScrollBarVisibility="Auto">
-                                        <ItemsPresenter/>
-                                    </ScrollViewer>
-                                </Border>
-                            </Popup>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!-- A flat, full-width row that behaves like a button (used by the Songs panel). -->
-        <Style x:Key="PanelRowButton" TargetType="Button">
-            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="RowBorder" Background="Transparent" CornerRadius="4" Padding="4,4">
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="RowBorder" Property="Background" Value="#18FFFFFF"/>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="RowBorder" Property="Background" Value="#33FF00FF"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style x:Key="PanelSmallButton" TargetType="Button">
-            <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
-            <Setter Property="FontSize" Value="11"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Margin" Value="0,0,6,0"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder"
-                                Background="#10FFFFFF"
-                                BorderBrush="#33FFFFFF"
-                                BorderThickness="1"
-                                CornerRadius="4"
-                                Padding="8,4">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#22FF00FF"/>
-                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="#AAFF00FF"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <!-- The gaps between dashboard panels and columns: drag one to resize its neighbours. -->
-        <Style x:Key="DashboardSplitter" TargetType="GridSplitter">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Focusable" Value="False"/>
-            <Setter Property="ShowsPreview" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="GridSplitter">
-                        <Border Background="Transparent">
-                            <Border Background="{TemplateBinding Background}" CornerRadius="2" Margin="2"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#55FF00FF"/>
-                </Trigger>
-                <Trigger Property="IsDragging" Value="True">
-                    <Setter Property="Background" Value="#AAFF00FF"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <DataTemplate x:Key="DashboardTransactionTemplate">
-            <Grid Margin="0,3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0"
-                           Text="{Binding Date}"
-                           Style="{StaticResource PanelText}"
-                           Foreground="#80FFFFFF"
-                           Margin="0,0,10,0"/>
-                <TextBlock Grid.Column="1"
-                           Style="{StaticResource PanelText}"
-                           TextTrimming="CharacterEllipsis">
-                    <Run Text="{Binding Title, Mode=OneWay}"/>
-                    <Run Text="{Binding Account, Mode=OneWay, StringFormat='· {0}'}" Foreground="#80FFFFFF"/>
-                </TextBlock>
-                <TextBlock Grid.Column="2"
-                           Text="{Binding Amount, StringFormat={}{0:N2}}"
-                           Margin="10,0,0,0">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock" BasedOn="{StaticResource PanelText}">
-                            <Setter Property="Foreground" Value="LightCyan"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsDebit}" Value="True">
-                                    <Setter Property="Foreground" Value="Fuchsia"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-            </Grid>
-        </DataTemplate>
-    </Window.Resources>
 
     <Border BorderThickness="1" BorderBrush="#33FFFFFF" Background="Black">
         <Border.Style>
@@ -289,555 +99,84 @@
                 <Rectangle x:Name="DropIndicator" Height="3" RadiusX="1.5" RadiusY="1.5" Fill="Fuchsia" Visibility="Collapsed"/>
             </Canvas>
 
-            <!-- Every dashboard panel is declared here and moved into the dashboard at startup. -->
+            <!-- Every dashboard panel is declared here and moved into the dashboard at startup.
+                 The content of each one is its own UserControl (see the Panels folder). -->
             <Grid x:Name="PanelParking" Visibility="Collapsed">
                 <Border x:Name="ClockPanel" Style="{StaticResource PanelCard}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Viewbox Grid.Row="0">
-                            <TextBlock Text="{Binding CurrentTime}"
-                                    Padding="5"
-                                    Foreground="White"
-                                    FontFamily="{StaticResource JetBrainsMonoThin}"
-                                    FontSize="14"
-                                    TextAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"/>
-                        </Viewbox>
-                        <!-- Countdown timer: shown under the clock while a timer is running. -->
-                        <Viewbox Grid.Row="1"
-                                 MaxHeight="90"
-                                 HorizontalAlignment="Center"
-                                 VerticalAlignment="Center"
-                                 Visibility="{Binding TimerVisibility}">
-                            <TextBlock
-                                Text="{Binding TimerCountDown}"
-                                Padding="5"
-                                Foreground="Fuchsia"
-                                FontFamily="{StaticResource JetBrainsMonoThin}"
-                                FontSize="14"
-                                TextAlignment="Center"
-                                VerticalAlignment="Center"
-                                HorizontalAlignment="Center"
-                            />
-                        </Viewbox>
-                    </Grid>
+                    <panels:ClockControl/>
+                </Border>
+
+                <!-- Counts down to the next full hour and rings a bell there (hours set in Settings > Hourly Bell). -->
+                <Border x:Name="HourlyBellPanel" Style="{StaticResource PanelCard}">
+                    <panels:HourlyBellControl x:Name="HourlyBellView"/>
+                </Border>
+
+                <Border x:Name="CountdownPanel" Style="{StaticResource PanelCard}">
+                    <panels:CountdownControl x:Name="CountdownView"/>
                 </Border>
 
                 <Border x:Name="JeePanel" Style="{StaticResource PanelCard}">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock Text="JEE Days Left:"
-                                   Style="{StaticResource PanelText}"
-                                   Foreground="#CCFFFFFF"
-                                   FontSize="13"
-                                   Margin="0,0,8,0"/>
-                        <TextBlock Text="{Binding JeeDays}"
-                                   Style="{StaticResource PanelText}"
-                                   Foreground="LightCyan"
-                                   FontSize="13"
-                                   Margin="0,0,16,0"/>
-                        <TextBlock Text="Hours Left:"
-                                   Style="{StaticResource PanelText}"
-                                   Foreground="#CCFFFFFF"
-                                   FontSize="13"
-                                   Margin="0,0,8,0"/>
-                        <TextBlock Text="{Binding JeeHours}"
-                                   Style="{StaticResource PanelText}"
-                                   Foreground="LightSteelBlue"
-                                   FontSize="13"/>
-                    </StackPanel>
+                    <panels:JeeControl/>
                 </Border>
 
-                <Border x:Name="ActivePanel" Style="{StaticResource PanelCard}">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <TextBlock Text="Active Since:"
-                                   Style="{StaticResource PanelText}"
-                                   Foreground="#CCFFFFFF"
-                                   FontSize="13"
-                                   Margin="0,0,8,0"/>
-                        <TextBlock Text="{Binding ActiveDuration}"
-                                   Style="{StaticResource PanelText}"
-                                   FontSize="13"/>
-                    </StackPanel>
+                <Border x:Name="ActivePanel" Style="{StaticResource PanelCard}" Margin="8">
+                    <panels:ActiveTimeControl/>
                 </Border>
 
                 <Border x:Name="NetWorthPanel" Style="{StaticResource PanelCard}">
-                    <StackPanel>
-                        <TextBlock Text="Net Worth" Style="{StaticResource PanelHeader}"/>
-                        <TextBlock x:Name="NetWorthText"
-                                   Text="-"
-                                   Style="{StaticResource PanelText}"
-                                   FontSize="24"
-                                   Foreground="LightCyan"/>
-                        <TextBlock x:Name="NetWorthHint"
-                                   Text="Loading..."
-                                   Style="{StaticResource PanelEmptyText}"
-                                   FontSize="11"
-                                   Margin="0,4,0,0"/>
-                    </StackPanel>
+                    <panels:NetWorthControl x:Name="NetWorthView"/>
                 </Border>
 
                 <Border x:Name="NetWorthGraphPanel" Style="{StaticResource PanelCard}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Title and range dropdown -->
-                        <Grid Grid.Row="0" Grid.ColumnSpan="2">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Net Worth Graph"
-                                       Style="{StaticResource PanelHeader}"
-                                       Margin="0"
-                                       VerticalAlignment="Center"/>
-                            <ComboBox x:Name="NetWorthRangeComboBox"
-                                      Grid.Column="1"
-                                      Style="{StaticResource PanelComboBox}"
-                                      SelectedIndex="1"
-                                      SelectionChanged="NetWorthRange_SelectionChanged">
-                                <ComboBoxItem Content="Last 15 days" Tag="15D"/>
-                                <ComboBoxItem Content="Last 30 days" Tag="30D"/>
-                                <ComboBoxItem Content="Last 3 months" Tag="3M"/>
-                                <ComboBoxItem Content="One year" Tag="1Y"/>
-                                <ComboBoxItem Content="Full" Tag="All"/>
-                            </ComboBox>
-                        </Grid>
-
-                        <!-- Range summary, or the day under the mouse -->
-                        <TextBlock x:Name="NetWorthGraphReadout"
-                                   Grid.Row="1"
-                                   Grid.ColumnSpan="2"
-                                   Style="{StaticResource PanelEmptyText}"
-                                   FontSize="11"
-                                   Margin="0,6,0,8"/>
-
-                        <!-- Value scale -->
-                        <TextBlock x:Name="NetWorthMaxLabel"
-                                   Grid.Row="2"
-                                   Style="{StaticResource PanelEmptyText}"
-                                   FontSize="10"
-                                   VerticalAlignment="Top"
-                                   Margin="0,0,8,0"/>
-                        <TextBlock x:Name="NetWorthMinLabel"
-                                   Grid.Row="2"
-                                   Style="{StaticResource PanelEmptyText}"
-                                   FontSize="10"
-                                   VerticalAlignment="Bottom"
-                                   Margin="0,0,8,0"/>
-
-                        <!-- Plot -->
-                        <Grid Grid.Row="2" Grid.Column="1">
-                            <Border BorderBrush="#18FFFFFF" BorderThickness="0,1,0,1"/>
-                            <Rectangle Height="1" Fill="#18FFFFFF" VerticalAlignment="Center"/>
-                            <Canvas x:Name="NetWorthChartCanvas"
-                                    Background="Transparent"
-                                    SizeChanged="NetWorthChart_SizeChanged"
-                                    MouseMove="NetWorthChart_MouseMove"
-                                    MouseLeave="NetWorthChart_MouseLeave">
-                                <Line x:Name="NetWorthHoverLine"
-                                      Stroke="#55FFFFFF"
-                                      StrokeThickness="1"
-                                      Visibility="Collapsed"/>
-                                <Polyline x:Name="NetWorthLine"
-                                          Stroke="LightCyan"
-                                          StrokeThickness="2"
-                                          StrokeLineJoin="Round"
-                                          StrokeStartLineCap="Round"
-                                          StrokeEndLineCap="Round"/>
-                                <Ellipse x:Name="NetWorthHoverDot"
-                                         Width="8"
-                                         Height="8"
-                                         Fill="LightCyan"
-                                         Stroke="Black"
-                                         StrokeThickness="2"
-                                         Visibility="Collapsed"/>
-                            </Canvas>
-                        </Grid>
-
-                        <!-- Date scale -->
-                        <Grid Grid.Row="3" Grid.Column="1" Margin="0,6,0,0">
-                            <TextBlock x:Name="NetWorthStartLabel"
-                                       Style="{StaticResource PanelEmptyText}"
-                                       FontSize="10"
-                                       HorizontalAlignment="Left"/>
-                            <TextBlock x:Name="NetWorthEndLabel"
-                                       Style="{StaticResource PanelEmptyText}"
-                                       FontSize="10"
-                                       HorizontalAlignment="Right"/>
-                        </Grid>
-                    </Grid>
+                    <panels:NetWorthGraphControl x:Name="NetWorthGraphView"/>
                 </Border>
 
                 <Border x:Name="AccountsPanel" Style="{StaticResource PanelCard}">
-                    <StackPanel>
-                        <TextBlock Text="Accounts" Style="{StaticResource PanelHeader}"/>
-                        <TextBlock x:Name="AccountsEmptyText" Text="Loading..." Style="{StaticResource PanelEmptyText}"/>
-                        <ScrollViewer MaxHeight="130" VerticalScrollBarVisibility="Auto">
-                            <ItemsControl x:Name="DashboardAccountsList">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,3">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Text="{Binding Name}"
-                                                       Style="{StaticResource PanelText}"
-                                                       TextTrimming="CharacterEllipsis"/>
-                                            <TextBlock Grid.Column="1"
-                                                       Text="{Binding Balance, StringFormat={}{0:N2}}"
-                                                       Style="{StaticResource PanelText}"
-                                                       Foreground="LightCyan"
-                                                       Margin="10,0,0,0"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </StackPanel>
+                    <panels:AccountsControl x:Name="AccountsView"/>
                 </Border>
 
-                <Border x:Name="BalancePanel" Style="{StaticResource PanelCard}" Padding="16">
-                    <local:BalanceControl ExpenseRequested="AddExpense_Click"/>
+                <Border x:Name="BalancePanel" Style="{StaticResource PanelCard}">
+                    <local:BalanceControl ExpenseRequested="AddExpense_Click" DailyMtmRequested="DailyMtm_Click" IncomeRequested="AddIncome_Click" TransferRequested="Transfer_Click"/>
                 </Border>
 
                 <Border x:Name="RecentPanel" Style="{StaticResource PanelCard}">
-                    <StackPanel>
-                        <TextBlock Text="Recent Transactions" Style="{StaticResource PanelHeader}"/>
-                        <TextBlock x:Name="RecentEmptyText" Text="Loading..." Style="{StaticResource PanelEmptyText}"/>
-                        <ItemsControl x:Name="RecentTransactionsList" ItemTemplate="{StaticResource DashboardTransactionTemplate}"/>
-                    </StackPanel>
+                    <panels:RecentTransactionsControl x:Name="RecentView"/>
                 </Border>
 
                 <Border x:Name="TopPanel" Style="{StaticResource PanelCard}">
-                    <StackPanel>
-                        <TextBlock Text="Top Transactions This Month" Style="{StaticResource PanelHeader}"/>
-                        <TextBlock x:Name="TopEmptyText" Text="Loading..." Style="{StaticResource PanelEmptyText}"/>
-                        <ItemsControl x:Name="TopTransactionsList" ItemTemplate="{StaticResource DashboardTransactionTemplate}"/>
-                    </StackPanel>
+                    <panels:TopTransactionsControl x:Name="TopView"/>
+                </Border>
+
+                <Border x:Name="DailyExpensesPanel" Style="{StaticResource PanelCard}">
+                    <panels:DailyExpensesControl x:Name="DailyExpensesView"/>
+                </Border>
+
+                <Border x:Name="MonthSummaryPanel" Style="{StaticResource PanelCard}">
+                    <panels:MonthSummaryControl x:Name="MonthSummaryView"/>
                 </Border>
 
                 <Border x:Name="SongsPanel" Style="{StaticResource PanelCard}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="Songs" Style="{StaticResource PanelHeader}" Margin="0,0,0,2"/>
-                        <TextBlock x:Name="SongsPathText"
-                                   Grid.Row="1"
-                                   Style="{StaticResource PanelEmptyText}"
-                                   FontSize="10"
-                                   TextWrapping="NoWrap"
-                                   TextTrimming="CharacterEllipsis"
-                                   Margin="0,0,0,6"/>
-                        <StackPanel Grid.Row="2" Margin="0,0,0,6">
-                            <StackPanel Orientation="Horizontal">
-                                <Button x:Name="SongsPlayButton" Content="Play" Style="{StaticResource PanelSmallButton}" Click="SongsPlay_Click"/>
-                                <Button Content="Next" Style="{StaticResource PanelSmallButton}" Click="SongsNext_Click"/>
-                                <Button x:Name="SongsShuffleButton" Content="Shuffle: off" Style="{StaticResource PanelSmallButton}" Click="SongsShuffle_Click"/>
-                            </StackPanel>
-                            <TextBlock x:Name="SongsNowPlayingText"
-                                       Text="Nothing playing"
-                                       Style="{StaticResource PanelText}"
-                                       Foreground="LightCyan"
-                                       FontSize="11"
-                                       TextTrimming="CharacterEllipsis"
-                                       Margin="0,6,0,0"/>
-                            <TextBlock x:Name="SongsMessageText"
-                                       Style="{StaticResource PanelEmptyText}"
-                                       Margin="0,4,0,0"
-                                       Visibility="Collapsed"/>
-                        </StackPanel>
-                        <ItemsControl x:Name="SongsList"
-                                      Grid.Row="3"
-                                      MinHeight="60"
-                                      VirtualizingPanel.IsVirtualizing="True"
-                                      ScrollViewer.CanContentScroll="True">
-                            <ItemsControl.Template>
-                                <ControlTemplate TargetType="ItemsControl">
-                                    <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" Focusable="False">
-                                        <ItemsPresenter/>
-                                    </ScrollViewer>
-                                </ControlTemplate>
-                            </ItemsControl.Template>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Style="{StaticResource PanelRowButton}" Click="SongEntry_Click" ToolTip="{Binding FullPath}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock x:Name="GlyphText" Text="{Binding Glyph}" Width="18" Foreground="#80FFFFFF"/>
-                                            <TextBlock Text="{Binding Name}"/>
-                                        </StackPanel>
-                                    </Button>
-                                    <DataTemplate.Triggers>
-                                        <DataTrigger Binding="{Binding IsFolder}" Value="True">
-                                            <Setter TargetName="GlyphText" Property="Foreground" Value="LightCyan"/>
-                                        </DataTrigger>
-                                    </DataTemplate.Triggers>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Grid>
+                    <panels:SongsControl x:Name="SongsView"/>
                 </Border>
 
                 <Border x:Name="EqualizerPanel" Style="{StaticResource PanelCard}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
-                            <TextBlock Text="Equalizer" Style="{StaticResource PanelHeader}"/>
-                            <TextBlock x:Name="EqualizerStyleText"
-                                       Style="{StaticResource PanelEmptyText}"
-                                       FontSize="10"
-                                       HorizontalAlignment="Right"
-                                       VerticalAlignment="Top"/>
-                        </Grid>
-                        <!-- Click anywhere on the display to switch to the next look. -->
-                        <Grid Grid.Row="1"
-                              MinHeight="60"
-                              Background="Transparent"
-                              Cursor="Hand"
-                              ToolTip="Click to change the look"
-                              MouseLeftButtonDown="Equalizer_MouseLeftButtonDown">
-                            <!-- The shader paints over this rectangle. -->
-                            <Rectangle x:Name="EqualizerShaderSurface"
-                                       Fill="Black"
-                                       SizeChanged="EqualizerShaderSurface_SizeChanged"/>
-                            <!-- Plain bars, used only when shaders are unavailable. -->
-                            <Canvas x:Name="EqualizerCanvas"
-                                    ClipToBounds="True"
-                                    Visibility="Collapsed"
-                                    SizeChanged="EqualizerCanvas_SizeChanged"/>
-                            <TextBlock x:Name="EqualizerErrorText"
-                                       Style="{StaticResource PanelEmptyText}"
-                                       FontSize="10"
-                                       VerticalAlignment="Top"
-                                       Visibility="Collapsed"/>
-                        </Grid>
-                    </Grid>
+                    <panels:EqualizerControl x:Name="EqualizerView"/>
                 </Border>
 
                 <Border x:Name="TodoPanel" Style="{StaticResource PanelCard}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Style="{StaticResource PanelHeader}">
-                            <Run Text="To-Do List"/>
-                            <Run Text="(sample data)" Foreground="#80FFFFFF" FontSize="10"/>
-                        </TextBlock>
-                        <Grid Grid.Row="1" Margin="0,0,0,4">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="48"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Task" Style="{StaticResource PanelEmptyText}" FontSize="10"/>
-                            <TextBlock Grid.Column="1" Text="Done" Style="{StaticResource PanelEmptyText}" FontSize="10" HorizontalAlignment="Right"/>
-                        </Grid>
-                        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                            <ItemsControl x:Name="TodoList">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,3">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="48"/>
-                                            </Grid.ColumnDefinitions>
-                                            <StackPanel Orientation="Horizontal" Margin="{Binding Indent}">
-                                                <TextBlock Text="{Binding Glyph}"
-                                                           Style="{StaticResource PanelText}"
-                                                           Foreground="#B8FFFFFF"
-                                                           Width="16"/>
-                                                <TextBlock x:Name="TitleText"
-                                                           Text="{Binding Title}"
-                                                           Style="{StaticResource PanelText}"
-                                                           Foreground="#CCFFFFFF"/>
-                                            </StackPanel>
-                                            <TextBlock x:Name="PercentText"
-                                                       Grid.Column="1"
-                                                       Text="{Binding Percent}"
-                                                       Style="{StaticResource PanelText}"
-                                                       Foreground="#B8FFFFFF"
-                                                       HorizontalAlignment="Right"/>
-                                        </Grid>
-                                        <DataTemplate.Triggers>
-                                            <DataTrigger Binding="{Binding IsGroup}" Value="True">
-                                                <Setter TargetName="TitleText" Property="Foreground" Value="White"/>
-                                                <Setter TargetName="PercentText" Property="Foreground" Value="LightCyan"/>
-                                            </DataTrigger>
-                                        </DataTemplate.Triggers>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </Grid>
+                    <panels:TodoControl/>
                 </Border>
 
                 <Border x:Name="RemindersPanel" Style="{StaticResource PanelCard}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Style="{StaticResource PanelHeader}">
-                            <Run Text="Reminders"/>
-                            <Run Text="(sample data)" Foreground="#80FFFFFF" FontSize="10"/>
-                        </TextBlock>
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <ItemsControl x:Name="RemindersList">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,4">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding Title}"
-                                                           Style="{StaticResource PanelText}"
-                                                           TextTrimming="CharacterEllipsis"/>
-                                                <TextBlock Text="{Binding Date}"
-                                                           Style="{StaticResource PanelEmptyText}"
-                                                           FontSize="10"
-                                                           Margin="0,2,0,0"/>
-                                            </StackPanel>
-                                            <TextBlock x:Name="DueText"
-                                                       Grid.Column="1"
-                                                       Text="{Binding Due}"
-                                                       Style="{StaticResource PanelText}"
-                                                       Foreground="#B8FFFFFF"
-                                                       VerticalAlignment="Center"
-                                                       Margin="10,0,0,0"/>
-                                        </Grid>
-                                        <DataTemplate.Triggers>
-                                            <DataTrigger Binding="{Binding IsUrgent}" Value="True">
-                                                <Setter TargetName="DueText" Property="Foreground" Value="Fuchsia"/>
-                                            </DataTrigger>
-                                        </DataTemplate.Triggers>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </Grid>
+                    <panels:RemindersControl/>
                 </Border>
 
                 <Border x:Name="NotesPanel" Style="{StaticResource PanelCard}">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
-                            <TextBlock Text="Notes" Style="{StaticResource PanelHeader}"/>
-                            <TextBlock x:Name="NotesStatusText"
-                                       Style="{StaticResource PanelEmptyText}"
-                                       FontSize="10"
-                                       HorizontalAlignment="Right"
-                                       VerticalAlignment="Top"/>
-                        </Grid>
-                        <TextBox x:Name="NotesTextBox"
-                                 Grid.Row="1"
-                                 AcceptsReturn="True"
-                                 AcceptsTab="True"
-                                 TextWrapping="Wrap"
-                                 VerticalScrollBarVisibility="Auto"
-                                 MinHeight="60"
-                                 Background="#14FFFFFF"
-                                 Foreground="White"
-                                 CaretBrush="White"
-                                 BorderBrush="#33FFFFFF"
-                                 BorderThickness="1"
-                                 Padding="6"
-                                 FontFamily="{StaticResource JetBrainsMonoRegular}"
-                                 FontSize="12"
-                                 TextChanged="NotesTextBox_TextChanged"
-                                 LostFocus="NotesTextBox_LostFocus"/>
-                    </Grid>
+                    <panels:NotesControl x:Name="NotesView"/>
                 </Border>
 
                 <Border x:Name="HabitsPanel" Style="{StaticResource PanelCard}">
-                    <StackPanel>
-                        <Grid>
-                            <TextBlock Style="{StaticResource PanelHeader}">
-                                <Run Text="Habit Tracker"/>
-                                <Run Text="(sample data)" Foreground="#80FFFFFF" FontSize="10"/>
-                            </TextBlock>
-                            <!-- Key -->
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-                                <Rectangle Width="12" Height="12" RadiusX="2" RadiusY="2" Fill="#39D353" Margin="0,0,6,0"/>
-                                <TextBlock Text="Done" Style="{StaticResource PanelEmptyText}" FontSize="10" Margin="0,0,14,0"/>
-                                <Rectangle Width="12" Height="12" RadiusX="2" RadiusY="2" Fill="#14FFFFFF" Margin="0,0,6,0"/>
-                                <TextBlock Text="Not done" Style="{StaticResource PanelEmptyText}" FontSize="10"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- One row per habit, one cell per day, newest day on the right -->
-                        <ItemsControl x:Name="HabitRowsList" SizeChanged="HabitRowsList_SizeChanged">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Margin="0,2">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="130"/>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="48"/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Text="{Binding Name}"
-                                                   Style="{StaticResource PanelText}"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   VerticalAlignment="Center"/>
-                                        <ItemsControl Grid.Column="1" ItemsSource="{Binding Days}" HorizontalAlignment="Right">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <StackPanel Orientation="Horizontal"/>
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Rectangle Width="12"
-                                                               Height="12"
-                                                               RadiusX="2"
-                                                               RadiusY="2"
-                                                               Margin="0,0,3,0"
-                                                               Fill="{Binding Fill}"
-                                                               ToolTip="{Binding Tip}"/>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                        <TextBlock Grid.Column="2"
-                                                   Text="{Binding Percent}"
-                                                   Style="{StaticResource PanelText}"
-                                                   Foreground="#B8FFFFFF"
-                                                   HorizontalAlignment="Right"
-                                                   VerticalAlignment="Center"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
+                    <panels:HabitsControl/>
                 </Border>
             </Grid>
         </Grid>

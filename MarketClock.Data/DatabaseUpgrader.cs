@@ -68,6 +68,18 @@ namespace MarketClock.Data
 
             // Expenses can carry an expense category.
             AddExpenseCategoryColumn(db);
+
+            // Daily MTM entries are marked so they can be found again and edited.
+            if (!HasColumn(db, "Transactions", "IsDailyMtm"))
+            {
+                db.Database.ExecuteSqlRaw("ALTER TABLE Transactions ADD COLUMN IsDailyMtm INTEGER NOT NULL DEFAULT 0");
+            }
+
+            // Transfers between accounts are marked so they are not counted as expense or income.
+            if (!HasColumn(db, "Transactions", "IsTransfer"))
+            {
+                db.Database.ExecuteSqlRaw("ALTER TABLE Transactions ADD COLUMN IsTransfer INTEGER NOT NULL DEFAULT 0");
+            }
         }
 
         private static void AddExpenseCategoryColumn(MarketClockDbContext db)

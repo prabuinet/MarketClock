@@ -49,11 +49,14 @@
     <None Remove="fonts\JetBrainsMonoNL-Thin.ttf" />
     <None Remove="fonts\JetBrainsMonoNL-ThinItalic.ttf" />
     <None Remove="sounds\bell.mp3" />
+    <None Remove="sounds\burmesebell.mp3" />
     <None Remove="sounds\notification-158187.mp3" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+    <PackageReference Include="MahApps.Metro.IconPacks.FontAwesome" Version="6.2.1" />
+    <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="6.2.1" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.161" />
     <PackageReference Include="NAudio" Version="3.1.0" />
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.53.3" />
@@ -102,6 +105,7 @@
     <Resource Include="fonts\JetBrainsMonoNL-ThinItalic.ttf" />
     <Resource Include="app.ico" />
     <Resource Include="sounds\bell.mp3" />
+    <Resource Include="sounds\burmesebell.mp3" />
     <Resource Include="sounds\notification-158187.mp3" />
   </ItemGroup>
 

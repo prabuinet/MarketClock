@@ -1,16 +1,11 @@
 using System.Windows;
 
-namespace MarketClock
+namespace MarketClock.Panels
 {
-    // Sample data for the panels that are not implemented yet (to-do list, reminders,
-    // habit tracker). Everything in this file is dummy data and can be deleted once
-    // the real features exist.
-    public partial class MainWindow
+    // Habit Tracker panel. Not implemented yet: it shows sample data,
+    // which can be deleted once the real feature exists.
+    public partial class HabitsControl : System.Windows.Controls.UserControl
     {
-        public sealed record TodoItemRow(string Glyph, string Title, string Percent, Thickness Indent, bool IsGroup);
-
-        public sealed record ReminderItemRow(string Title, string Date, string Due, bool IsUrgent);
-
         public sealed record HabitDayCell(System.Windows.Media.Brush Fill, string Tip);
 
         public sealed record HabitItemRow(string Name, List<HabitDayCell> Days, string Percent);
@@ -19,7 +14,7 @@ namespace MarketClock
         private const double HabitPercentWidth = 48;
         private const double HabitCellPitch = 15; // 12px cell + 3px gap
 
-        // A day is either done (green) or not done (faint). Keep in step with the key in MainWindow.xaml.
+        // A day is either done (green) or not done (faint). Keep in step with the key in HabitsControl.xaml.
         private static readonly System.Windows.Media.Brush HabitNotDoneBrush = CreateBrush(0x14, 0xFF, 0xFF, 0xFF);
         private static readonly System.Windows.Media.Brush HabitDoneBrush = CreateBrush(0xFF, 0x39, 0xD3, 0x53);
 
@@ -34,65 +29,9 @@ namespace MarketClock
 
         private int habitDayCount;
 
-        private void LoadPlaceholderData()
+        public HabitsControl()
         {
-            TodoList.ItemsSource = BuildSampleTodos();
-            RemindersList.ItemsSource = BuildSampleReminders();
-        }
-
-        private static List<TodoItemRow> BuildSampleTodos()
-        {
-            var groups = new (string Title, (string Title, bool Done)[] Tasks)[]
-            {
-                ("Home renovation", new[] { ("Get quotes", true), ("Pick contractor", true), ("Buy materials", false) }),
-                ("Tax filing", new[] { ("Collect statements", true), ("Reconcile accounts", false), ("File return", false), ("Verify", false) }),
-                ("Learning", new[] { ("Finish course", false), ("Practice project", false) }),
-            };
-
-            var rows = new List<TodoItemRow>();
-
-            foreach (var group in groups)
-            {
-                var percent = 100 * group.Tasks.Count(t => t.Done) / group.Tasks.Length;
-                rows.Add(new TodoItemRow("▾", group.Title, $"{percent}%", new Thickness(0), true));
-
-                foreach (var task in group.Tasks)
-                {
-                    rows.Add(new TodoItemRow(
-                        task.Done ? "☑" : "☐",
-                        task.Title,
-                        task.Done ? "100%" : "0%",
-                        new Thickness(16, 0, 0, 0),
-                        false));
-                }
-            }
-
-            return rows;
-        }
-
-        private static List<ReminderItemRow> BuildSampleReminders()
-        {
-            var samples = new (string Title, int DaysAway)[]
-            {
-                ("Electricity bill", 0),
-                ("Credit card payment", 2),
-                ("Insurance premium", 9),
-                ("Vehicle service", 16),
-                ("Tax filing", 27),
-            };
-
-            return samples
-                .Select(sample => new ReminderItemRow(
-                    sample.Title,
-                    DateTime.Today.AddDays(sample.DaysAway).ToString("ddd, dd MMM"),
-                    sample.DaysAway switch
-                    {
-                        0 => "today",
-                        1 => "tomorrow",
-                        _ => $"in {sample.DaysAway} days",
-                    },
-                    sample.DaysAway <= 2))
-                .ToList();
+            InitializeComponent();
         }
 
         private void HabitRowsList_SizeChanged(object sender, SizeChangedEventArgs e)

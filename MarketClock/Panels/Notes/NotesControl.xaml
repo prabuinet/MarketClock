@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="MarketClock.Panels.NotesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="200"
+             d:DesignWidth="320">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <TextBlock Text="Notes &amp; Calculator"
+                       Style="{StaticResource PanelHeader}"
+                       ToolTip="Start a line with &gt; and press Enter to calculate it, e.g. &gt; (5 / 2) * 340"/>
+            <TextBlock x:Name="NotesStatusText"
+                       Style="{StaticResource PanelEmptyText}"
+                       FontSize="10"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"/>
+        </Grid>
+        <TextBox x:Name="NotesTextBox"
+                 Grid.Row="1"
+                 AcceptsReturn="True"
+                 AcceptsTab="True"
+                 TextWrapping="Wrap"
+                 VerticalScrollBarVisibility="Auto"
+                 MinHeight="60"
+                 Background="#14FFFFFF"
+                 Foreground="White"
+                 CaretBrush="White"
+                 BorderBrush="#33FFFFFF"
+                 BorderThickness="1"
+                 Padding="6"
+                 FontFamily="{StaticResource JetBrainsMonoRegular}"
+                 FontSize="12"
+                 PreviewKeyDown="NotesTextBox_PreviewKeyDown"
+                 TextChanged="NotesTextBox_TextChanged"
+                 LostFocus="NotesTextBox_LostFocus"/>
+    </Grid>
+</UserControl>

@@ -70,7 +70,5 @@ namespace MarketClock
         {
             BuildDashboard();
         }
-
-        private static Visibility ToVisibility(bool visible) => visible ? Visibility.Visible : Visibility.Collapsed;
     }
 }

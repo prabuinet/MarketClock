@@ -4,13 +4,27 @@ using MarketClock.Data;
 
 namespace MarketClock
 {
+    // Adds an expense or, when opened with income: true, an income. The two differ only in
+    // wording, in the sign the amount is saved with, and in income having no category.
     public partial class ExpenseWindow : System.Windows.Window
     {
+        private readonly bool isIncome;
         private AccountStore? accountStore;
 
-        public ExpenseWindow()
+        public ExpenseWindow(bool income = false)
         {
             InitializeComponent();
+            isIncome = income;
+
+            if (isIncome)
+            {
+                Title = "Add Income";
+                HeadingText.Text = "Add Income";
+                SaveButton.Content = "+ Add Income";
+                CategoryLabel.Visibility = Visibility.Collapsed;
+                CategoryComboBox.Visibility = Visibility.Collapsed;
+            }
+
             ExpenseDatePicker.SelectedDate = DateTime.Today;
             Loaded += ExpenseWindow_Loaded;
         }
@@ -69,7 +83,8 @@ namespace MarketClock
                 return;
             }
 
-            int? categoryId = CategoryComboBox.SelectedItem is ExpenseCategory { Id: > 0 } category
+            // Categories are expense categories, so an income is saved without one.
+            int? categoryId = !isIncome && CategoryComboBox.SelectedItem is ExpenseCategory { Id: > 0 } category
                 ? category.Id
                 : null;
 
@@ -79,13 +94,14 @@ namespace MarketClock
             SaveButton.IsEnabled = false;
             try
             {
-                // An expense reduces the balance, so it is stored as a negative amount.
-                await Task.Run(() => store.AddTransaction(account.Id, date, description, -amount, categoryId));
+                // An expense reduces the balance, so it is stored as a negative amount; an income as a positive one.
+                var signedAmount = isIncome ? amount : -amount;
+                await Task.Run(() => store.AddTransaction(account.Id, date, description, signedAmount, categoryId));
                 DialogResult = true;
             }
             catch (Exception ex)
             {
-                MessageTextBlock.Text = $"Could not save the expense: {ex.Message}";
+                MessageTextBlock.Text = $"Could not save the {(isIncome ? "income" : "expense")}: {ex.Message}";
                 SaveButton.IsEnabled = true;
             }
         }

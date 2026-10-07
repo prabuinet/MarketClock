@@ -1,0 +1,284 @@
+﻿<UserControl x:Class="MarketClock.Panels.SongsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="320">
+    <UserControl.Resources>
+        <!-- A bare icon that lights up under the mouse. The icon takes the button's Foreground. -->
+        <Style x:Key="SongIconButton" TargetType="Button">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="IconBorder" Background="Transparent" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="IconBorder" Property="Background" Value="#22FFFFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="IconBorder" Property="Background" Value="#33FF00FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title, and the two views to choose between: browse the folder, or now playing -->
+        <Grid Grid.Row="0" Margin="0,0,0,4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="Songs" Style="{StaticResource PanelHeader}" Margin="0" VerticalAlignment="Center"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button x:Name="SongsBrowseTabButton" Style="{StaticResource SongIconButton}" ToolTip="Browse the songs folder" Click="SongsBrowseTab_Click">
+                    <iconPacks:PackIconMaterial Kind="FolderMusicOutline" Width="15" Height="15"/>
+                </Button>
+                <Button x:Name="SongsNowPlayingTabButton" Style="{StaticResource SongIconButton}" ToolTip="Now playing" Click="SongsNowPlayingTab_Click">
+                    <iconPacks:PackIconMaterial Kind="PlaylistMusic" Width="15" Height="15"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Problems: a folder that cannot be read, a song that will not play -->
+        <TextBlock x:Name="SongsMessageText"
+                   Grid.Row="1"
+                   Style="{StaticResource PanelEmptyText}"
+                   Margin="0,0,0,6"
+                   Visibility="Collapsed"/>
+
+        <!-- Now playing: progress of the current song, the controls and the queue -->
+        <Grid x:Name="SongsNowPlayingView" Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock x:Name="SongsStateText"
+                       Grid.Row="1"
+                       Style="{StaticResource PanelEmptyText}"
+                       FontSize="10"
+                       TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis"/>
+
+            <!-- Progress: click or drag to move within the song. Time left is on the right. -->
+            <Grid Grid.Row="2" Margin="0,6,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid x:Name="SongProgressArea"
+                      Height="16"
+                      Background="Transparent"
+                      Cursor="Hand"
+                      ToolTip="Click or drag to move within the song"
+                      SizeChanged="SongProgressArea_SizeChanged"
+                      MouseLeftButtonDown="SongProgressArea_MouseLeftButtonDown"
+                      MouseMove="SongProgressArea_MouseMove"
+                      MouseLeftButtonUp="SongProgressArea_MouseLeftButtonUp">
+                    <Border Height="4" CornerRadius="2" Background="#22FFFFFF" VerticalAlignment="Center"/>
+                    <Border x:Name="SongProgressFill"
+                            Width="0"
+                            Height="4"
+                            CornerRadius="2"
+                            Background="Fuchsia"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"/>
+                </Grid>
+                <TextBlock x:Name="SongsRemainingText"
+                           Text="00:00"
+                           Grid.Column="1"
+                           Style="{StaticResource PanelText}"
+                           Foreground="#CCFFFFFF"
+                           FontSize="11"
+                           MinWidth="44"
+                           TextAlignment="Right"
+                           VerticalAlignment="Center"
+                           Margin="8,0,0,0"
+                           ToolTip="Time left in this song"/>
+            </Grid>
+
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,4,0,0">
+                <Button Style="{StaticResource SongIconButton}" Margin="6,0" ToolTip="Previous" Click="SongsPrevious_Click">
+                    <iconPacks:PackIconMaterial Kind="SkipPrevious" Width="16" Height="16"/>
+                </Button>
+                <Button x:Name="SongsPlayButton" Style="{StaticResource SongIconButton}" Margin="6,0" ToolTip="Play" Click="SongsPlay_Click">
+                    <iconPacks:PackIconMaterial x:Name="SongsPlayIcon" Kind="Play" Width="20" Height="20"/>
+                </Button>
+                <Button Style="{StaticResource SongIconButton}" Margin="6,0" ToolTip="Stop" Click="SongsStop_Click">
+                    <iconPacks:PackIconMaterial Kind="Stop" Width="16" Height="16"/>
+                </Button>
+                <Button Style="{StaticResource SongIconButton}" Margin="6,0" ToolTip="Next" Click="SongsNext_Click">
+                    <iconPacks:PackIconMaterial Kind="SkipNext" Width="16" Height="16"/>
+                </Button>
+                <Button x:Name="SongsShuffleButton" Style="{StaticResource SongIconButton}" Margin="18,0,6,0" ToolTip="Shuffle" Click="SongsShuffle_Click">
+                    <iconPacks:PackIconMaterial Kind="Shuffle" Width="14" Height="14"/>
+                </Button>
+                <Button Style="{StaticResource SongIconButton}" Margin="6,0" ToolTip="Stop and clear the list" Click="SongsClear_Click">
+                    <iconPacks:PackIconMaterial Kind="PlaylistRemove" Width="14" Height="14"/>
+                </Button>
+            </StackPanel>
+
+            <!-- Every queued song, in play order, with the current one highlighted. Click one to play it. -->
+            <ItemsControl x:Name="SongsQueueList"
+                          Grid.Row="5"
+                          Margin="0,6,0,0"
+                          VirtualizingPanel.IsVirtualizing="True"
+                          ScrollViewer.CanContentScroll="True">
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <ScrollViewer x:Name="QueueScrollViewer" CanContentScroll="True" VerticalScrollBarVisibility="Auto" Focusable="False">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border x:Name="QueueRow"
+                                Background="Transparent"
+                                CornerRadius="4"
+                                Padding="4,3"
+                                Margin="0,0,4,0"
+                                Cursor="Hand"
+                                ToolTip="Play this song"
+                                MouseLeftButtonDown="QueueRow_MouseLeftButtonDown">
+                            <StackPanel Orientation="Horizontal">
+                                <iconPacks:PackIconMaterial x:Name="QueueIcon"
+                                                            Kind="Play"
+                                                            Width="10"
+                                                            Height="10"
+                                                            Margin="0,0,6,0"
+                                                            VerticalAlignment="Center"
+                                                            Foreground="Fuchsia"
+                                                            Visibility="Hidden"/>
+                                <TextBlock x:Name="QueueName"
+                                           Text="{Binding Name}"
+                                           Style="{StaticResource PanelText}"
+                                           Foreground="#CCFFFFFF"
+                                           TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <Trigger SourceName="QueueRow" Property="IsMouseOver" Value="True">
+                                <Setter TargetName="QueueRow" Property="Background" Value="#18FFFFFF"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                <Setter TargetName="QueueRow" Property="Background" Value="#33FF00FF"/>
+                                <Setter TargetName="QueueIcon" Property="Visibility" Value="Visible"/>
+                                <Setter TargetName="QueueName" Property="Foreground" Value="White"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+
+        <!-- Browse: the folder being shown. Clicking a folder opens it; the icons on each line
+             add it to the queue or play it (on the ".." line they act on the folder being shown). -->
+        <Grid x:Name="SongsBrowseView" Grid.Row="2" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="SongsPathText"
+                       Style="{StaticResource PanelEmptyText}"
+                       FontSize="10"
+                       TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis"
+                       Margin="0,0,0,6"/>
+            <ItemsControl x:Name="SongsList"
+                          Grid.Row="1"
+                          MinHeight="60"
+                          VirtualizingPanel.IsVirtualizing="True"
+                          ScrollViewer.CanContentScroll="True">
+                <ItemsControl.Template>
+                    <ControlTemplate TargetType="ItemsControl">
+                        <ScrollViewer CanContentScroll="True" VerticalScrollBarVisibility="Auto" Focusable="False">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="EntryButton"
+                                    Style="{StaticResource PanelRowButton}"
+                                    Cursor="Arrow"
+                                    Click="SongEntry_Click"
+                                    ToolTip="{Binding FullPath}">
+                                <StackPanel Orientation="Horizontal">
+                                    <iconPacks:PackIconMaterial x:Name="EntryIcon"
+                                                                Kind="{Binding Icon}"
+                                                                Width="13"
+                                                                Height="13"
+                                                                Margin="0,0,7,0"
+                                                                VerticalAlignment="Center"
+                                                                Foreground="#80FFFFFF"/>
+                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="EntryQueueButton"
+                                    Grid.Column="1"
+                                    Style="{StaticResource SongIconButton}"
+                                    ToolTip="{Binding QueueTip}"
+                                    Click="SongEntryQueue_Click">
+                                <iconPacks:PackIconMaterial Kind="PlaylistPlus" Width="14" Height="14"/>
+                            </Button>
+                            <Button x:Name="EntryPlayButton"
+                                    Grid.Column="2"
+                                    Style="{StaticResource SongIconButton}"
+                                    Margin="0,0,4,0"
+                                    ToolTip="{Binding PlayTip}"
+                                    Click="SongEntryPlay_Click">
+                                <iconPacks:PackIconMaterial Kind="Play" Width="14" Height="14"/>
+                            </Button>
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsFolder}" Value="True">
+                                <Setter TargetName="EntryIcon" Property="Foreground" Value="LightCyan"/>
+                                <Setter TargetName="EntryButton" Property="Cursor" Value="Hand"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Grid>
+</UserControl>

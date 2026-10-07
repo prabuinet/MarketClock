@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="400">
@@ -14,7 +15,7 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Padding" Value="10,8"/>
             <Setter Property="Margin" Value="5,4"/>
             <Setter Property="FontFamily" Value="{StaticResource JetBrainsMonoRegular}"/>
             <Setter Property="FontSize" Value="13"/>
@@ -40,26 +41,26 @@
         </Style>
     </UserControl.Resources>
 
-    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button Style="{StaticResource BalanceActionButton}" Click="AddExpenseButton_Click">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="+"
-                           Foreground="Fuchsia"
-                           FontSize="18"
-                           FontWeight="SemiBold"
-                           Margin="0,-2,8,0"/>
-                <TextBlock Text="add expense"/>
-            </StackPanel>
-        </Button>
-        <Button Style="{StaticResource BalanceActionButton}">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Text="+"
-                           Foreground="LightCyan"
-                           FontSize="18"
-                           FontWeight="SemiBold"
-                           Margin="0,-2,8,0"/>
-                <TextBlock Text="income"/>
-            </StackPanel>
-        </Button>
-    </WrapPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Actions" Style="{StaticResource PanelHeader}"/>
+        <!-- Icon-only buttons; the tooltip says what each one does. -->
+        <WrapPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Style="{StaticResource BalanceActionButton}" ToolTip="Add expense" Click="AddExpenseButton_Click">
+                <iconPacks:PackIconMaterial Kind="CashMinus" Width="20" Height="20" Foreground="Fuchsia"/>
+            </Button>
+            <Button Style="{StaticResource BalanceActionButton}" ToolTip="Add income" Click="AddIncomeButton_Click">
+                <iconPacks:PackIconMaterial Kind="CashPlus" Width="20" Height="20" Foreground="#39D353"/>
+            </Button>
+            <Button Style="{StaticResource BalanceActionButton}" ToolTip="Daily MTM" Click="DailyMtmButton_Click">
+                <iconPacks:PackIconMaterial Kind="ChartLine" Width="20" Height="20" Foreground="Gold"/>
+            </Button>
+            <Button Style="{StaticResource BalanceActionButton}" ToolTip="Transfer between accounts" Click="TransferButton_Click">
+                <iconPacks:PackIconMaterial Kind="SwapHorizontal" Width="20" Height="20" Foreground="LightCyan"/>
+            </Button>
+        </WrapPanel>
+    </Grid>
 </UserControl>
